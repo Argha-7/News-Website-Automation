@@ -379,6 +379,15 @@
 </div>
 </div>
 
+
+<!-- Top AdSense Placeholder -->
+<div class='container' style='margin: 20px auto; text-align: center; overflow: hidden;'>
+<div style='background: #f0f0f0; border: 1px dashed #ccc; padding: 20px; color: #888; border-radius: 8px;'>
+<i class='fas fa-ad'></i><strong>AdSense Top Banner</strong><br/>
+        (Display Ad - Responsive)
+    </div>
+</div>
+
 <main class="container">
 <!-- HERO (Conditional display in JS) -->
 <section class="hero-section animate-in delay-1" id="hero-section">
@@ -403,6 +412,14 @@
 <div class="trending-list" id="trending-list">
 <div class="trending-item">Loading...</div>
 </div>
+</div>
+
+<div class="widget">
+<h3>Sponsored</h3>
+<div style='background: #f0f0f0; border: 1px dashed #ccc; padding: 40px 10px; color: #888; border-radius: 8px; text-align: center;'>
+<strong>AdSense Sidebar</strong><br/>
+        (Square/Vertical)
+    </div>
 </div>
 </aside>
 </div>
@@ -767,6 +784,13 @@ document.addEventListener('DOMContentLoaded', initNewsApp);
     </div>
 
     <div class='post-body'>
+        <!-- In-Article Ad -->
+        <div style='margin-bottom: 30px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 20px;'>
+            <div style='background: #f9f9f9; border: 1px dashed #ddd; padding: 15px; color: #aaa; font-size: 0.8rem;'>
+                ADVERTISEMENT
+            </div>
+        </div>
+
         <data:post.body/>
     </div>
 
