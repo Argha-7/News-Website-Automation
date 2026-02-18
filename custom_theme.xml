@@ -578,8 +578,13 @@ function renderPage(page) {
     }
 
     // Pagination Logic for Grid
-    // Slider takes top 5 posts. So Grid starts from index 5.
-    const startIdx = 5;
+    // Slider takes top 5 posts. So Grid normally starts from index 5.
+    // BUT if we have few posts, don't skip them, show them in grid too.
+    let startIdx = 5;
+    if (allPosts.length <= 5) {
+        startIdx = 0;
+    }
+    
     const gridPosts = allPosts.slice(startIdx); 
     const totalPages = Math.ceil(gridPosts.length / postsPerPage);
     

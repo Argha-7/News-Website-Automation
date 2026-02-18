@@ -192,8 +192,8 @@ def generate_blog_post(article_title, article_description, article_url, article_
             safe_prompt = urllib.parse.quote(prompt)
             article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
             
-        img_tag = f'<img src="{article_image_url}" style="width:100%; border-radius:10px; margin-top:30px;">' # Changed margin to top
-        content_data['content'] = content_data['content'] + img_tag # Append to end
+        img_tag = f'<img src="{article_image_url}" style="width:100%; border-radius:10px; margin-bottom:20px;">' # Move to TOP
+        content_data['content'] = img_tag + content_data['content'] # Prepend
 
         # 3. Append Hindi & Bengali Content
         if 'content_hindi' in content_data and content_data['content_hindi']:
