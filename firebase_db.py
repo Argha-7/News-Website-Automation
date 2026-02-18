@@ -46,17 +46,31 @@ def save_article(article_data):
         record = {
             'title': article_data.get('title', 'Untitled'),
             'content': article_data.get('content', ''),
-            'url': article_data.get('url', ''), # Original URL
-            'image_url': article_data.get('image_url', ''), # Our generated/fetched image
+            'url': article_data.get('url', ''), 
+            'image_url': article_data.get('image_url', ''), 
             'created_at': datetime.now(),
             'keywords': article_data.get('keywords', []),
             'language': 'en'
         }
         
         # Add to collection
-        # timestamp as ID is simple, or let auto-ID
         db.collection('articles').add(record)
         logging.info(f"Article '{record['title']}' saved to Firebase.")
         
     except Exception as e:
         logging.error(f"Error saving to Firebase: {e}")
+
+def is_article_posted(url):
+    """
+    Checks if an article with the given URL exists in the Firebase database.
+    """
+    db = init_db()
+    if not db:
+        return False # Fallback to local if DB fails
+        
+    try:
+        docs = db.collection('articles').where('url', '==', url).limit(1).get()
+        return len(docs) > 0
+    except Exception as e:
+        logging.error(f"Error checking Firebase for duplicates: {e}")
+        return False

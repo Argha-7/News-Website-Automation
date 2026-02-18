@@ -54,7 +54,7 @@ def main():
     
     posted_urls = load_posted_articles()
     posts_count = 0
-    MAX_POSTS_PER_CYCLE = 2
+    MAX_POSTS_PER_CYCLE = 4
     
     for query, category, country, label_text in TOPICS:
         if posts_count >= MAX_POSTS_PER_CYCLE:
@@ -70,8 +70,8 @@ def main():
 
             url = article['url']
             
-            # Check if already posted
-            if url in posted_urls:
+            # Check if already posted (Local + Firebase)
+            if url in posted_urls or firebase_db.is_article_posted(url):
                 logging.info(f"Skipping duplicate article: {article['title']}")
                 continue
                 
@@ -87,7 +87,10 @@ def main():
             
             if not generated_content:
                 continue
-                
+            
+            # Add original URL to generated content for Firebase logging
+            generated_content['url'] = url
+            
             # OPTIONAL: Save to Firebase (if key exists)
             firebase_db.save_article(generated_content)
                 
@@ -112,34 +115,19 @@ def main():
             if post_result:
                 logging.info(f"Successfully posted: {generated_content['title']}")
                 save_posted_article(url)
-                posted_urls.append(url) # Update in-memory list immediately
+                posted_urls.append(url) 
                 posts_count += 1
                 
-                # Rate limiting to be safe
-                logging.info("Waiting 60 seconds before next post...")
-                time.sleep(60)
+                # Rate limiting (10 seconds - reduced for faster CI execution)
+                time.sleep(10)
             else:
                 logging.error("Failed to post to Blogger.")
 
     logging.info(f"Cycle completed. Posted {posts_count} articles.")
 
 if __name__ == "__main__":
-    daily_requests = 0
-    
-    while True:
-        # Check daily limit (NewsAPI Developer Plan usually 100 or 1000/day)
-        if daily_requests >= 950:
-            logging.warning("Daily request limit reached (950). Stopping to prevent overage.")
-            # Sleep for 24 hours or until manually restarted
-            time.sleep(86400) 
-            daily_requests = 0 
-            
-        try:
-            main()
-            # Each 'main()' call makes len(TOPICS) API requests. Currently 6 topics.
-            daily_requests += 6 
-        except Exception as e:
-            logging.error(f"Critical Error in main loop: {e}")
-        
-        logging.info("Cycle finished. Sleeping for 5 minutes (Balanced Mode) to fit daily quota...")
-        time.sleep(300) # 5 minutes sleep (Approx 14 hours runtime/day)
+    # In GitHub Actions mode, we run ONCE and exit.
+    try:
+        main()
+    except Exception as e:
+        logging.error(f"Critical Error in main execution: {e}")
