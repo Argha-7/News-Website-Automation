@@ -1,0 +1,9 @@
+@echo off
+echo Starting AI News Automation...
+cd /d "%~dp0"
+call venv\Scripts\activate.bat
+echo Verifying dependencies...
+pip install -r requirements.txt > nul 2>&1
+echo Dependencies OK. Starting script...
+python main.py
+pause

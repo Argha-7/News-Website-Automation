@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection'
+    xmlns='http://www.w3.org/1999/xhtml'
+    xmlns:b='http://www.google.com/2005/gml/b'
+    xmlns:data='http://www.google.com/2005/gml/data'
+    xmlns:expr='http://www.google.com/2005/gml/expr'>
+
+    <head>
+        <meta charset='UTF-8'/>
+        <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+        <meta content='Automated AI News Portal. Curated tech and world updates.' name='description'/>
+        <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+
+        <!-- SEO META TAGS -->
+        <b:if cond='data:blog.pageType == "index"'>
+            <title>
+                <data:blog.pageTitle/>
+            </title>
+            <meta content='news, technology, world updates, ai news, automated news, trending' name='keywords'/>
+            <b:else/>
+            <title>
+                <data:blog.pageName/>
+ -                <data:blog.title/>
+            </title>
+        </b:if>
+
+        <!-- OPEN GRAPH (Facebook/LinkedIn) -->
+        <meta expr:content='data:blog.url' property='og:url'/>
+        <meta expr:content='data:blog.title' property='og:site_name'/>
+        <b:if cond='data:blog.pageType == "item"'>
+            <meta expr:content='data:blog.pageName' property='og:title'/>
+            <meta content='article' property='og:type'/>
+            <b:if cond='data:blog.postImageUrl'>
+                <meta expr:content='data:blog.postImageUrl' property='og:image'/>
+                <b:else/>
+                <meta content='https://via.placeholder.com/1200x630?text=News' property='og:image'/>
+            </b:if>
+            <b:else/>
+            <meta expr:content='data:blog.title' property='og:title'/>
+            <meta content='website' property='og:type'/>
+            <meta content='https://via.placeholder.com/1200x630?text=Home' property='og:image'/>
+        </b:if>
+
+        <!-- TWITTER CARD -->
+        <meta content='summary_large_image' name='twitter:card'/>
+        <meta expr:content='data:blog.title' name='twitter:title'/>
+        <b:if cond='data:blog.postImageUrl'>
+            <meta expr:content='data:blog.postImageUrl' name='twitter:image'/>
+        </b:if>
+
+        <!-- SCHEMA.ORG JSON-LD (Vital for Google News) -->
+        <script type='application/ld+json'>
+        {
+          "@context": "http://schema.org",
+          "@type": "WebSite",
+          "url": "<data:blog.homepageUrl/>
+",
+          "name": "<data:blog.title/>
+",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "<data:blog.homepageUrl/>
+ search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+</script>
+<b:if cond='data:blog.pageType == "item"'>
+    <script type='application/ld+json'>
+            {
+              "@context": "http://schema.org",
+              "@type": "NewsArticle",
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "<data:blog.url/>
+"
+              },
+              "headline": "<data:blog.pageName/>
+",
+              "image": ["<data:blog.postImageUrl/>
+"],
+              "datePublished": "<data:blog.timestampISO8601/>
+",
+              "dateModified": "<data:blog.timestampISO8601/>
+",
+              "author": {
+                "@type": "Person",
+                "name": "AI Editor"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "<data:blog.title/>
+",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://via.placeholder.com/600x60"
+                }
+              }
+            }
+</script>
+</b:if>
+
+<!-- Google Fonts -->
+<link href='https://fonts.googleapis.com' rel='preconnect'/>
+<link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
+<link href='https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap' rel='stylesheet'/>
+
+<!-- Icons -->
+<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+
+<b:skin><![CDATA[
+        
+    /* --- MODERN VARIABLES --- */
+    :root {
+        --primary: #E60000; /* Richer Red */
+        --primary-dark: #B30000;
+        --secondary: #1A1A1A;
+        --bg-body: #F8F9FA;
+        --bg-card: #FFFFFF;
+        --text-main: #121212;
+        --text-muted: #555555;
+        --border: #E5E5E5;
+        --shadow-hover: 0 10px 30px rgba(0,0,0,0.12);
+        --shadow-card: 0 4px 6px rgba(0,0,0,0.04);
+        --radius: 12px;
+        --font-head: 'Playfair Display', serif; /* Editorial Font */
+        --font-body: 'Outfit', sans-serif; /* Modern Clean Font */
+        --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        --footer-bg: #0f0f0f;
+    }
+
+    /* --- BASE --- */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: var(--font-body); background: var(--bg-body); color: var(--text-main); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; cursor: pointer; transition: var(--transition); }
+    ul { list-style: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* --- ANIMATIONS --- */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    .animate-in { animation: fadeInUp 0.6s ease forwards; opacity: 0; } 
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    /* --- HEADER --- */
+    .top-bar { background: #000; color: #fff; padding: 8px 0; font-size: 0.8rem; letter-spacing: 0.5px; }
+    .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
+    .top-bar a { opacity: 0.8; transition: 0.3s; }
+    .top-bar a:hover { opacity: 1; color: var(--primary); }
+
+    .main-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 20px rgba(0,0,0,0.05); border-bottom: 2px solid var(--primary); }
+    .header-content { height: 80px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .logo { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
+    .logo span.ai { background: var(--secondary); color: #fff; padding: 2px 8px; border-radius: 6px; }
+    .logo span.news { color: var(--primary); }
+
+    /* Navigation */
+    .nav-links { display: flex; gap: 30px; }
+    .nav-links a { font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; position: relative; color: var(--text-main); }
+    .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary); transition: var(--transition); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* Header Social Icons */
+    .header-social { display: flex; gap: 15px; align-items: center; }
+    .header-social a { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: 0.3s; font-size: 0.9rem; }
+    .header-social a:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+
+    /* Mobile Menu */
+    .mobile-only { display: none; }
+    .mobile-btn { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--text-main); }
+
+    /* --- TICKER --- */
+    .ticker-wrap { background: var(--secondary); color: #fff; height: 40px; overflow: hidden; display: flex; font-weight: 500; }
+    .ticker-title { background: var(--primary); padding: 0 25px; display: flex; align-items: center; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; z-index: 5; position: relative; }
+    .ticker-title::after { content:''; position: absolute; right: -20px; top: 0; border-top: 40px solid var(--primary); border-right: 20px solid transparent; }
+    .ticker-content { display: flex; align-items: center; padding-left: 20px; animation: ticker 25s linear infinite; white-space: nowrap; }
+    .ticker-item { margin-right: 50px; font-size: 0.9rem; opacity: 0.9; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+    /* --- HERO SLIDER --- */
+    .hero-section { margin: 30px 0; border-radius: var(--radius); overflow: hidden; position: relative; height: 500px; box-shadow: var(--shadow-card); }
+    .hero-slider { position: relative; width: 100%; height: 100%; }
+    .hero-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; z-index: 1; pointer-events: none; }
+    .hero-slide.active { opacity: 1; z-index: 2; pointer-events: auto; }
+    
+    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 6s ease; }
+    .hero-slide.active .hero-img { transform: scale(1.1); } /* Zoom effect on active */
+    
+    .hero-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%); padding: 60px 40px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; z-index: 3; }
+    
+    .tag { background: var(--primary); color: #fff; padding: 5px 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; align-self: flex-start; margin-bottom: 15px; letter-spacing: 1px; }
+    .hero-title { font-family: var(--font-head); font-size: 3rem; line-height: 1.1; margin-bottom: 10px; width: 80%; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .hero-meta { opacity: 0.8; font-size: 0.9rem; }
+
+    /* Slider Controls */
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 2rem; padding: 10px 15px; cursor: pointer; z-index: 10; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .slider-btn:hover { background: var(--primary); }
+    .prev-btn { left: 20px; }
+    .next-btn { right: 20px; }
+    
+    .slider-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; }
+    .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+    .dot.active { background: var(--primary); transform: scale(1.2); }
+
+    /* --- GRID --- */
+    .content-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 40px; margin-bottom: 60px; }
+    .section-head { display: flex; align-items: center; margin-bottom: 25px; border-bottom: 2px solid var(--border); padding-bottom: 10px; position: relative; }
+    .section-head::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 80px; height: 2px; background: var(--primary); }
+    .section-head h2 { font-family: var(--font-head); font-size: 1.8rem; color: var(--secondary); margin-right: 20px; }
+
+    .news-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+    .news-card { background: var(--bg-card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); transition: var(--transition); border: 1px solid transparent; display: flex; flex-direction: column; height: 100%; }
+    .news-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: rgba(0,0,0,0.05); }
+    .card-thumb { height: 220px; overflow: hidden; position: relative; }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .news-card:hover .card-thumb img { transform: scale(1.1); }
+    .card-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+    .card-tag { color: var(--primary); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
+    .card-title { font-family: var(--font-head); font-size: 1.4rem; line-height: 1.3; margin-bottom: 12px; color: var(--text-main); transition: 0.2s; }
+    .news-card:hover .card-title { color: var(--primary); }
+    .card-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px; flex-grow: 1; }
+    .card-footer { border-top: 1px solid var(--border); padding-top: 15px; font-size: 0.85rem; color: var(--text-light); display: flex; justify-content: space-between; }
+
+    /* SIDEBAR */
+    .widget { background: var(--bg-card); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow-card); margin-bottom: 30px; border: 1px solid var(--border); }
+    .widget h3 { font-family: var(--font-head); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .trending-item { display: flex; align-items: start; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f0f0f0; }
+    .trending-rank { font-size: 2rem; font-weight: 800; color: #eee; line-height: 1; margin-right: 15px; font-family: var(--font-head); -webkit-text-stroke: 1px var(--text-light); }
+    .trending-info h4 { font-size: 1rem; font-weight: 600; line-height: 1.4; transition: 0.2s; }
+    .trending-item:hover h4 { color: var(--primary); }
+
+    /* SINGLE POST STYLES */
+    .post-wrapper { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .post-header { margin-bottom: 30px; text-align: center; }
+    .post-title { font-family: var(--font-head); font-size: 2.5rem; line-height: 1.2; margin-bottom: 15px; }
+    .post-meta { color: #666; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+    .post-body { font-size: 1.1rem; line-height: 1.8; color: #333; }
+    .post-body p { margin-bottom: 20px; }
+    .post-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
+    .post-body h2 { font-family: var(--font-head); margin-top: 30px; margin-bottom: 15px; font-size: 1.8rem; }
+    .post-body ul { list-style: disc; margin-left: 20px; margin-bottom: 20px; }
+    .post-body li { margin-bottom: 10px; }
+
+    /* FOOTER (PREMIUM REDESIGN) */
+    .main-footer { 
+        background-color: var(--footer-bg); 
+        color: #ddd; 
+        padding: 80px 0 0; 
+        margin-top: 80px; 
+        border-top: 4px solid var(--primary);
+        font-family: var(--font-body);
+    }
+    .footer-grid { 
+        display: grid; 
+        grid-template-columns: 2fr 1fr 1fr 1.5fr; 
+        gap: 50px; 
+        margin-bottom: 60px; 
+    }
+    .footer-col h3 { 
+        font-family: var(--font-head); font-size: 1.3rem; margin-bottom: 25px; color: #fff; text-transform: uppercase; letter-spacing: 1px; 
+    }
+    .footer-desc { color: #888; margin-bottom: 25px; line-height: 1.7; font-size: 0.95rem; }
+    
+    .footer-social-new { display: flex; gap: 10px; }
+    .footer-social-new a { 
+        width: 40px; height: 40px; background: #222; border-radius: 50%; color: #fff; 
+        display: flex; align-items: center; justify-content: center; transition: 0.3s; 
+    }
+    .footer-social-new a:hover { background: var(--primary); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(230,0,0,0.3); }
+
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: #aaa; transition: 0.3s; display: inline-block; font-size: 0.95rem; }
+    .footer-links a:hover { color: var(--primary); padding-left: 5px; }
+
+    .footer-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .footer-tag { 
+        background: #222; color: #ccc; padding: 6px 12px; font-size: 0.8rem; border-radius: 20px; transition: 0.3s; 
+    }
+    .footer-tag:hover { background: var(--primary); color: #fff; }
+
+    .newsletter-box { background: #151515; padding: 20px; border-radius: 8px; border: 1px solid #333; }
+    .newsletter-input { 
+        width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; margin-bottom: 10px; outline: none; 
+    }
+    .newsletter-input:focus { border-color: var(--primary); }
+    .newsletter-btn { 
+        width: 100%; background: var(--primary); color: #fff; padding: 12px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; transition: 0.3s; 
+    }
+    .newsletter-btn:hover { background: var(--primary-dark); }
+
+    .footer-bottom { 
+        background: #000; padding: 25px 0; border-top: 1px solid #222; text-align: center; color: #666; font-size: 0.85rem; 
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom-links a { color: #666; margin-left: 20px; }
+    .footer-bottom-links a:hover { color: #fff; }
+
+    /* SKELETON */
+    .skeleton { background: #e0e0e0; background: linear-gradient(90deg, #e0e0e0 0%, #f0f0f0 50%, #e0e0e0 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+        .footer-grid { grid-template-columns: 1fr 1fr; }
+        .nav-links, .header-social { display: none; } /* Hide Desktop Nav & Icons */
+        .mobile-only { display: block; } /* Show Hamburger */
+        .footer-bottom { flex-direction: column; gap: 10px; }
+    }
+    @media (max-width: 768px) {
+        .content-grid, .news-grid { grid-template-columns: 1fr; }
+        .hero-section { height: 350px; }
+        .hero-title { font-size: 2rem; width: 100%; }
+        .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+    
+    ]]></b:skin>
+</head>
+
+<body>
+
+<!-- HEADER (Visual Only) -->
+<header class="main-header">
+<div class="container header-content">
+<div class="logo">
+<a href="/" style="display:flex; align-items:center; gap:5px;">
+<span class="ai">AI</span>
+<span class="news">NEWS</span>
+</a>
+</div>
+<nav class="nav-links">
+<a href="/">Home</a>
+<a href="/search/label/Technology">Technology</a>
+<a href="/search/label/Business">Business</a>
+<a href="/search/label/Science">Science</a>
+<a href="/search/label/World">World</a>
+</nav>
+<div class="header-social">
+<a href="#">
+<i class="fab fa-facebook-f"></i>
+</a>
+<a href="#">
+<i class="fab fa-twitter"></i>
+</a>
+<a href="#">
+<i class="fab fa-youtube"></i>
+</a>
+</div>
+<button class="mobile-btn mobile-only">
+<i class="fas fa-bars"></i>
+</button>
+</div>
+</header>
+
+<!-- MAIN CONTENT SECTIONS -->
+<b:section id='main-content'>
+
+<!-- 1. HOMEPAGE WIDGET (Dynamic JS for Home + Categories) -->
+<!-- COND: Show on Home OR Search (Label) pages -->
+<b:widget id='HTML1' locked='false' title='HomeApp' type='HTML' cond='data:view.isHomepage or data:view.isLabelSearch'>
+<b:widget-settings>
+<b:widget-setting name='content'><![CDATA[
+<div id="app-root">
+<div id="view-home" class="view-section active animate-in">
+
+<!-- Ticker -->
+<div class="ticker-wrap">
+<div class="ticker-title">Breaking News</div>
+<div class="ticker-content" id="ticker-content">
+<div class="ticker-item">Loading latest updates...</div>
+</div>
+</div>
+
+<main class="container">
+<!-- HERO (Conditional display in JS) -->
+<section class="hero-section animate-in delay-1" id="hero-section">
+<div style="width:100%; height:100%; background:#ddd;" class="skeleton"></div>
+</section>
+
+<!-- GRID -->
+<div class="content-grid animate-in delay-2">
+<!-- Feed -->
+<div class="news-feed">
+<div class="section-head"><h2 id="section-title">Latest Stories</h2></div>
+<div class="news-grid" id="news-grid">
+<!-- Skeleton Cards -->
+<div class="news-card"><div class="card-thumb skeleton sk-img"></div><div class="card-body"><div class="skeleton sk-text"></div><div class="skeleton sk-text short"></div></div></div>
+<div class="news-card"><div class="card-thumb skeleton sk-img"></div><div class="card-body"><div class="skeleton sk-text"></div><div class="skeleton sk-text short"></div></div></div>
+</div>
+</div>
+<!-- Sidebar -->
+<aside class="sidebar">
+<div class="widget">
+<h3>Trending Now</h3>
+<div class="trending-list" id="trending-list">
+<div class="trending-item">Loading...</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+
+</div>
+</div>
+
+<script>
+// --- BLOGGER API INTEGRATION (Smarter & Paginated) ---
+let allPosts = [];
+let currentPage = 1;
+const postsPerPage = 10;
+
+async function fetchBloggerPosts() {
+    try {
+        let url = '/feeds/posts/default?alt=json&max-results=50';
+        
+        // CHECK IF CATEGORY PAGE
+        const path = window.location.pathname;
+        if (path.includes('/search/label/')) {
+            // Extract Label
+            const label = decodeURIComponent(path.split('/search/label/')[1].replace(/\/$/, ""));
+            url = `/feeds/posts/default/-/${label}?alt=json&max-results=50`;
+            
+            // Update Title
+            const titleEl = document.getElementById('section-title');
+            if(titleEl) titleEl.innerText = `${label} News`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response');
+        const json = await response.json();
+        return parseBloggerData(json);
+    } catch (error) { console.error(error); return []; }
+}
+
+function parseBloggerData(json) {
+    if (!json.feed.entry) return [];
+    return json.feed.entry.map(entry => {
+        let image = 'https://via.placeholder.com/800x400?text=No+Image';
+        const content = entry.content ? entry.content.$t : '';
+        
+        // PRIORITIZE CONTENT IMAGE (The one user sees inside the post)
+        const imgMatch = content.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch) {
+            image = imgMatch[1];
+        } else if (entry.media$thumbnail) {
+             // Fallback to thumbnail if no image in content (rare for our setup)
+             image = entry.media$thumbnail.url.replace('s72-c', 'w1000'); 
+        }
+        
+        let category = 'Latest';
+        if (entry.category && entry.category.length > 0) category = entry.category[0].term;
+        const link = entry.link.find(l => l.rel === 'alternate').href;
+        const plainText = content.replace(/<[^>]*>?/gm, '');
+        const desc = plainText.substring(0, 100) + '...';
+        return { title: entry.title.$t, category, image, desc, link, date: new Date(entry.published.$t).toLocaleDateString() };
+    });
+}
+
+async function initNewsApp() {
+    allPosts = await fetchBloggerPosts();
+    renderPage(1);
+    renderTrending();
+    renderTicker();
+}
+
+// --- SLIDER LOGIC ---
+let currentSlide = 0;
+let sliderInterval;
+
+function renderHeroSlider(posts) {
+    const heroEl = document.getElementById('hero-section');
+    if (!heroEl || posts.length === 0) return;
+    
+    // Take top 5 posts
+    const sliderPosts = posts.slice(0, 5);
+    
+    let slidesHtml = '<div class="hero-slider">';
+    let dotsHtml = '<div class="slider-dots">';
+    
+    sliderPosts.forEach((post, index) => {
+        const activeClass = index === 0 ? 'active' : '';
+        
+        slidesHtml += `
+            <div class="hero-slide ${activeClass}" data-index="${index}">
+<a href="${post.link}" style="display:block; width:100%; height:100%; color:white;">
+<img src="${post.image}" class="hero-img" alt="${post.title}">
+<div class="hero-overlay">
+<span class="tag">${post.category}</span>
+<h1 class="hero-title">${post.title}</h1>
+<div class="hero-meta">${post.date}</div>
+</div>
+</a>
+</div>`;
+            
+        dotsHtml += `<span class="dot ${activeClass}" onclick="goToSlide(${index})"></span>`;
+    });
+    
+    // Add Controls (Arrows removed)
+    slidesHtml += `
+        ${dotsHtml}</div>
+</div>`;
+    
+    heroEl.innerHTML = slidesHtml;
+    heroEl.style.display = 'block';
+    
+    startAutoSlide();
+}
+
+function moveSlide(direction) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.dot');
+    if(slides.length === 0) return;
+    
+    slides[currentSlide].classList.remove('active');
+    dots[currentSlide].classList.remove('active');
+    
+    currentSlide = (currentSlide + direction + slides.length) % slides.length;
+    
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+    
+    resetAutoSlide();
+}
+
+function goToSlide(index) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.dot');
+    if(slides.length === 0) return;
+    
+    slides[currentSlide].classList.remove('active');
+    dots[currentSlide].classList.remove('active');
+    
+    currentSlide = index;
+    
+    slides[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+    
+    resetAutoSlide();
+}
+
+function startAutoSlide() {
+    sliderInterval = setInterval(() => {
+        moveSlide(1);
+    }, 5000); // 5 Seconds
+}
+
+function resetAutoSlide() {
+    clearInterval(sliderInterval);
+    startAutoSlide();
+}
+
+function renderPage(page) {
+    currentPage = page;
+    const heroEl = document.getElementById('hero-section');
+    const gridEl = document.getElementById('news-grid');
+    
+    if (!heroEl || !gridEl) return;
+
+    if (allPosts.length > 0) {
+        // Render Slider ONLY on first load (or page 1)
+        if (page === 1) {
+             renderHeroSlider(allPosts);
+        } else {
+             heroEl.style.display = 'none'; // Hide slider on other pages if you want
+        }
+    } else {
+        heroEl.style.display = 'none';
+        gridEl.innerHTML = '<p>No news found.</p>';
+        return;
+    }
+
+    // Pagination Logic for Grid
+    // Slider takes top 5 posts. So Grid starts from index 5.
+    const startIdx = 5;
+    const gridPosts = allPosts.slice(startIdx); 
+    const totalPages = Math.ceil(gridPosts.length / postsPerPage);
+    
+    const start = (page - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    const currentGridCheck = gridPosts.slice(start, end);
+    
+    gridEl.innerHTML = '';
+    
+    // Scroll to top
+    if(page > 1) {
+        const contentGrid = document.querySelector('.content-grid');
+        if(contentGrid) contentGrid.scrollIntoView({behavior: 'smooth'});
+    }
+
+    if (currentGridCheck.length > 0) {
+        currentGridCheck.forEach(item => {
+            gridEl.innerHTML += `
+               <div class="news-card animate-in">
+<a href="${item.link}" class="card-thumb"><img src="${item.image}"></a>
+<div class="card-body">
+<span class="card-tag">${item.category}</span>
+<a href="${item.link}"><h3 class="card-title">${item.title}</h3></a>
+<p class="card-desc">${item.desc}</p>
+<div class="card-footer"><span>${item.date}</span><a href="${item.link}" style="color:var(--primary);">Read More <i class="fas fa-arrow-right"></i></a></div>
+</div>
+</div>`;
+        });
+    }
+
+    // Render Pagination Controls
+    let pDiv = document.getElementById('pagination-container');
+    if (!pDiv) {
+        pDiv = document.createElement('div');
+        pDiv.id = 'pagination-container';
+        pDiv.style.marginTop = "40px";
+        gridEl.parentNode.appendChild(pDiv);
+    }
+    
+    if (totalPages > 1) {
+        let btns = '<div style="display:flex; justify-content:center; gap:20px;">';
+        
+        // Prev Button
+        if (page > 1) {
+            btns += `<button onclick="renderPage(${page - 1})" style="padding:10px 20px; background:#222; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">&laquo; Previous</button>`;
+        }
+        
+        // Page Info
+        btns += `<span style="align-self:center; font-weight:600; color:#000;">Page ${page} of ${totalPages}</span>`;
+        
+        // Next Button
+        if (page < totalPages) {
+            btns += `<button onclick="renderPage(${page + 1})" style="padding:10px 20px; background:#222; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Next &raquo;</button>`;
+        }
+        
+        btns += '</div>';
+        pDiv.innerHTML = btns;
+    } else {
+        pDiv.innerHTML = ''; // Hide if 1 page
+    }
+}
+
+function renderTrending() {
+    const listEl = document.getElementById('trending-list');
+    if (!listEl || allPosts.length === 0) return;
+    
+    // Take top 5 for now.
+    const trending = allPosts.slice(0, 5); 
+    
+    listEl.innerHTML = '';
+    trending.forEach((item, index) => {
+        listEl.innerHTML += `
+           <div class="trending-item">
+<div class="trending-rank">0${index + 1}</div>
+<div class="trending-info">
+<span style="font-size:0.75rem; color:#888;">${item.category}</span>
+<h4><a href="${item.link}">${item.title}</a></h4>
+</div>
+</div>`;
+    });
+}
+
+function renderTicker() {
+    const tickerEl = document.getElementById('ticker-content');
+    if (!tickerEl || allPosts.length === 0) return;
+    
+    let html = '';
+    allPosts.forEach(item => {
+        html += `<div class="ticker-item"><span style="color:#ffaaaa;">[${item.category}]</span><a href="${item.link}" style="color:white;">${item.title}</a></div>`;
+    });
+    tickerEl.innerHTML = html; // Replaces "Loading..."
+}
+
+document.addEventListener('DOMContentLoaded', initNewsApp);
+</script>]]></b:widget-setting>
+</b:widget-settings>
+<b:includable id='main'>
+<div class='widget-content'>
+<data:content/>
+</div>
+</b:includable>
+</b:widget>
+
+<!-- 2. SINGLE POST WIDGET (Native Blogger) -->
+<!-- COND: Only show when NOT on Homepage AND NOT on Label Search -->
+<b:widget id='Blog1' locked='false' title='Blog Posts' type='Blog' cond='!data:view.isHomepage and !data:view.isLabelSearch'>
+<b:widget-settings>
+<b:widget-setting name='showDateHeader'>false</b:widget-setting>
+<b:widget-setting name='commentLabel'>Comments</b:widget-setting>
+</b:widget-settings>
+<b:includable id='main'>
+<b:loop values='data:posts' var='post'>
+<div class='container' style='margin-top:40px; margin-bottom:60px;'>
+<div class='post-wrapper animate-in'>
+    <div class='post-header'>
+        <div class='post-meta' style='margin-bottom:10px; color:var(--primary); font-weight:700;'>
+            <b:if cond='data:post.labels'>
+                <b:loop values='data:post.labels' var='label'>
+                    <data:label.name/>
+                </b:loop>
+            </b:if>
+        </div>
+        <h1 class='post-title'>
+            <data:post.title/>
+        </h1>
+        <div class='post-meta'>
+                                        Published on <data:post.dateHeader/>
+        </div>
+
+        <!-- AUDIO NEWS BUTTON -->
+        <div style="margin-top:20px; text-align:center;">
+            <button class="audio-btn" onclick="toggleAudio(this)" style="background:#222; color:#fff; border:none; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:600; font-size:0.9rem; display:inline-flex; align-items:center; gap:8px; transition:0.3s;">
+                <i class="fas fa-play"></i> Listen to News
+            </button>
+        </div>
+
+        <script>
+                                        // Global scope for TTS
+                                        var currentUtterance = null;
+                                        
+                                        function toggleAudio(btn) {
+                                            const icon = btn.querySelector('i');
+                                            const postWrapper = btn.closest('.post-wrapper');
+                                            const text = postWrapper.querySelector('.post-body').innerText;
+                                            
+                                            // 1. Stop if currently speaking
+                                            if (window.speechSynthesis.speaking) {
+                                                window.speechSynthesis.cancel();
+                                                // Reset all buttons
+                                                document.querySelectorAll('.audio-btn').forEach(b => {
+                                                    b.style.background = "#222";
+                                                    b.innerHTML = '<i class="fas fa-play"></i> Listen to News';
+                                                });
+                                                
+                                                // If we clicked the SAME button that was playing, just stop.
+                                                // If we clicked a DIFFERENT button, start new audio.
+                                                if (btn.classList.contains('playing')) {
+                                                    btn.classList.remove('playing');
+                                                    return;
+                                                }
+                                            }
+                                            
+                                            // 2. Start New Audio
+                                            const utterance = new SpeechSynthesisUtterance(text);
+                                            utterance.lang = 'en-US';
+                                            utterance.rate = 1.0;
+                                            
+                                            utterance.onend = function() {
+                                                btn.style.background = "#222";
+                                                btn.innerHTML = '<i class="fas fa-play"></i> Listen to News';
+                                                btn.classList.remove('playing');
+                                            };
+                                            
+                                            window.speechSynthesis.speak(utterance);
+                                            btn.style.background = "#E60000"; // Active Red
+                                            btn.innerHTML = '<i class="fas fa-stop"></i> Stop Audio';
+                                            btn.classList.add('playing');
+                                        }
+        </script>
+    </div>
+
+    <div class='post-body'>
+        <data:post.body/>
+    </div>
+
+    <div style='margin-top:40px; padding-top:20px; border-top:1px solid #eee;'>
+        <h3>Comments</h3>
+        <b:include data='post' name='comment_picker'/>
+    </div>
+</div>
+</div>
+</b:loop>
+</b:includable>
+<b:includable id='comment_picker' var='post'>
+<div class='comments'>
+<b:if cond='data:post.commentSource == 1'>
+<b:include data='post' name='iframe_comments'/>
+</b:if>
+</div>
+</b:includable>
+<b:includable id='iframe_comments' var='post'>
+<!-- Optimized Comment Iframe -->
+<script type='text/javascript'>
+                    (function() {
+                      var items = <data:post.commentSrc/>
+;
+                      var ms = <data:post.commentMs/>
+;
+                      var menu = <data:post.commentMenu/>
+;
+                      var rgb = <data:post.commentRgb/>
+;
+                      var url = <data:post.commentUrl/>
+;
+                      var author = <data:post.authorUrl/>
+;
+                      if (items) {
+                        var div = document.getElementById('comment-editor');
+                        div.innerHTML = '<iframe allowtransparency="true" frameborder="0" height="410" id="comment-editor" name="comment-editor" src="' + items + '" width="100%"></iframe>';
+                      }
+                    })();
+</script>
+</b:includable>
+<!-- Required Placeholder Includables -->
+<b:includable id='comments' var='post'/>
+<b:includable id='comment-form' var='post'/>
+<b:includable id='backlinks' var='post'/>
+<b:includable id='feedLinks'/>
+<b:includable id='mobile-index-post' var='post'/>
+<b:includable id='mobile-main' var='top'/>
+<b:includable id='mobile-nextprev'/>
+<b:includable id='mobile-post' var='post'/>
+<b:includable id='nextprev'/>
+<b:includable id='post' var='post'/>
+<b:includable id='postQuickEdit' var='post'/>
+<b:includable id='shareButtons' var='post'/>
+<b:includable id='status-message'/>
+</b:widget>
+
+</b:section>
+
+<!-- FOOTER (PREMIUM) -->
+<footer class="main-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<div class="logo" style="margin-bottom:20px;">
+<span class="ai" style="background:#fff; color:#000;">AI</span>
+<span class="news" style="color:var(--primary);">NEWS</span>
+</div>
+<p class="footer-desc">The next generation of news broadcasting. AI-curated, verified, and delivered instantly.</p>
+<div class="footer-social-new">
+<a href="#">
+<i class="fab fa-facebook-f"></i>
+</a>
+<a href="#">
+<i class="fab fa-twitter"></i>
+</a>
+<a href="#">
+<i class="fab fa-youtube"></i>
+</a>
+<a href="#">
+<i class="fab fa-instagram"></i>
+</a>
+</div>
+</div>
+
+<div class="footer-col footer-links">
+<h3>Quick Links</h3>
+<ul>
+<li>
+<a href="/">Home</a>
+</li>
+<li>
+<a href="/p/about-us.html">About Us</a>
+</li>
+<li>
+<a href="/p/contact-us.html">Contact Us</a>
+</li>
+<li>
+<a href="/p/privacy-policy.html">Privacy Policy</a>
+</li>
+</ul>
+</div>
+
+<div class="footer-col footer-links">
+<h3>Categories</h3>
+<div class="footer-tags">
+<a href="#" class="footer-tag">Technology</a>
+<a href="#" class="footer-tag">Business</a>
+<a href="#" class="footer-tag">World</a>
+<a href="#" class="footer-tag">Science</a>
+<a href="#" class="footer-tag">Startups</a>
+</div>
+</div>
+
+<div class="footer-col">
+<h3>Newsletter</h3>
+<div class="newsletter-box">
+<input type="email" placeholder="Your Email Address" class="newsletter-input"/>
+<button class="newsletter-btn">SUBSCRIBE</button>
+</div>
+</div>
+</div>
+
+<div class="footer-bottom">
+<div class="copyright">&#169; 2026 AI News Network. All Rights Reserved.</div>
+<div class="footer-bottom-links">
+<a href="/p/terms-conditions.html">Terms</a>
+<a href="/p/privacy-policy.html">Privacy</a>
+</div>
+</div>
+</div>
+</footer>
+
+</body>
+
+</html>
