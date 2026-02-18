@@ -7,9 +7,10 @@ try:
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
             
-        print(f"REFRESH_TOKEN={creds.refresh_token}")
-        print(f"CLIENT_ID={creds.client_id}")
-        print(f"CLIENT_SECRET={creds.client_secret}")
+        with open('refresh_token.txt', 'w') as f:
+            f.write(creds.refresh_token)
+            
+        print("REFRESH_TOKEN saved to refresh_token.txt")
     else:
         print("token.pickle not found.")
 except Exception as e:

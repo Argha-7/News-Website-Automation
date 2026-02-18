@@ -3,7 +3,9 @@ import pickle
 import logging
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,12 +19,15 @@ def get_blogger_service():
     Handles the OAuth2 flow and token storage.
     """
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first time.
+    # 1. Try Legacy Pickle Token (Local Dev)
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
             
+    # 2. Try JSON Token (CI/CD Environment)
+    elif os.path.exists('token.json'):
+         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -36,9 +41,11 @@ def get_blogger_service():
                 'client_secret.json', SCOPES)
             creds = flow.run_local_server(port=0)
             
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+        # Save the credentials for the next run (Local only)
+        # Avoid saving pickle in CI if we started with JSON
+        if not os.path.exists('token.json'):
+            with open('token.pickle', 'wb') as token:
+                pickle.dump(creds, token)
 
     try:
         service = build('blogger', 'v3', credentials=creds)
