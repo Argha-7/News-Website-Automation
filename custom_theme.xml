@@ -402,8 +402,10 @@
     .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     @media (max-width: 1024px) {
         .cat-grid { grid-template-columns: repeat(2, 1fr); }
-        .newspaper-row { grid-template-columns: 1fr; }
-        .headlines-col { border-right: none; padding-right: 0; }
+        .newspaper-row { grid-template-columns: 1fr; gap: 30px; }
+        .headlines-col { border-right: none; padding-right: 0; order: 2; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .main-story-col { order: 1; }
+        .featured-list-col { order: 3; }
     }
     @media (max-width: 600px) {
         .cat-grid { grid-template-columns: 1fr; }
@@ -429,6 +431,31 @@
     .carousel-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
     .c-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: 1px solid rgba(0,0,0,0.2); }
     .c-dot.active { background: #fff; transform: scale(1.2); }
+
+    /* New Responsive Overrides for Newspaper Layout */
+    @media (max-width: 900px) {
+        .masthead-title { font-size: 3rem; }
+        .masthead { padding: 30px 0; }
+        .top-utility .container { flex-direction: column; gap: 10px; text-align: center; }
+        .main-navigation .nav-social { display: none; }
+    }
+
+    @media (max-width: 768px) {
+        .featured-carousel { height: 350px; }
+        .carousel-caption h2 { font-size: 1.5rem; }
+        .carousel-caption p { display: none; } /* Hide desc on very small screens to save space */
+        .masthead-title { font-size: 2.2rem; letter-spacing: -1px; }
+        .newspaper-row { gap: 20px; }
+        .cat-grid { grid-template-columns: 1fr; }
+        .section-divider { font-size: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+        .masthead-title { font-size: 1.8rem; }
+        .featured-carousel { height: 280px; }
+        .carousel-caption h2 { font-size: 1.3rem; }
+        .top-utility { font-size: 0.7rem; }
+    }
 
     ]]></b:skin>
 </head>
