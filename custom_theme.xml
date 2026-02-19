@@ -838,10 +838,12 @@ function postComment() {
     const text = document.getElementById('comment-text').value.trim();
     if (!text) return;
     
-    document.getElementById('post-comment-btn').innerText = "Posting...";
+    const postTitleEl = document.querySelector('.post-title');
+    const postTitle = postTitleEl ? postTitleEl.innerText.trim() : 'News Article';
     
     db.collection('comments').add({
         postId: currentPostId,
+        postTitle: postTitle,
         uid: user.uid,
         userName: user.displayName,
         userPhoto: user.photoURL,
@@ -901,7 +903,10 @@ function loadSidebarComments() {
                     <div class="comment-item">
 <img src="${data.userPhoto}" class="user-avatar" style="width:30px; height:30px;"/>
 <div class="comment-content">
-<div class="comment-user" style="font-size:0.8rem;">${data.userName.split(' ')[0]}</div>
+<div class="comment-user" style="font-size:0.8rem; flex-direction:column; align-items:flex-start;">
+<span>${data.userName.split(' ')[0]}</span>
+<span style="font-size:0.65rem; color:var(--primary); font-weight:400;">on ${data.postTitle || 'Article'}</span>
+</div>
 <div class="comment-text" style="font-size:0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${data.text}</div>
 </div>
 </div>`;
