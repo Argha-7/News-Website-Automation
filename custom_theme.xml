@@ -917,7 +917,7 @@ function loadSidebarComments() {
 
 function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(error => console.error(error));
+    auth.signInWithRedirect(provider).catch(error => console.error(error));
 }
 
 function logout() {
