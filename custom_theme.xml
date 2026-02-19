@@ -104,7 +104,7 @@
 <!-- Google Fonts -->
 <link href='https://fonts.googleapis.com' rel='preconnect'/>
 <link crossorigin='anonymous' href='https://fonts.gstatic.com' rel='preconnect'/>
-<link href='https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap' rel='stylesheet'/>
+<link href='https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Playfair+Display:wght@900&amp;family=DM+Serif+Display&amp;display=swap' rel='stylesheet'/>
 
 <!-- Icons -->
 <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
@@ -118,21 +118,18 @@
         
     /* --- MODERN VARIABLES --- */
     :root {
-        --primary: #E60000; /* Richer Red */
-        --primary-dark: #B30000;
-        --secondary: #1A1A1A;
-        --bg-body: #F8F9FA;
+        --primary: #000000;
+        --accent: #E60000;
+        --secondary: #333333;
+        --bg-body: #FFFFFF;
         --bg-card: #FFFFFF;
-        --text-main: #121212;
-        --text-muted: #555555;
-        --border: #E5E5E5;
-        --shadow-hover: 0 10px 30px rgba(0,0,0,0.12);
-        --shadow-card: 0 4px 6px rgba(0,0,0,0.04);
-        --radius: 12px;
-        --font-head: 'Playfair Display', serif; /* Editorial Font */
-        --font-body: 'Outfit', sans-serif; /* Modern Clean Font */
-        --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        --footer-bg: #0f0f0f;
+        --text-main: #000000;
+        --text-muted: #444444;
+        --border: #111111;
+        --header-font: 'DM Serif Display', serif;
+        --font-head: 'Playfair Display', serif;
+        --font-body: 'Outfit', sans-serif;
+        --transition: all 0.3s ease;
     }
 
     /* --- BASE --- */
@@ -156,40 +153,32 @@
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; }
 
-    /* --- HEADER --- */
-    .top-bar { background: #000; color: #fff; padding: 8px 0; font-size: 0.8rem; letter-spacing: 0.5px; }
-    .top-bar .container { display: flex; justify-content: space-between; align-items: center; }
-    .top-bar a { opacity: 0.8; transition: 0.3s; }
-    .top-bar a:hover { opacity: 1; color: var(--primary); }
+    /* --- HEADER REDESIGN --- */
+    .top-utility { border-bottom: 1px solid #ddd; padding: 10px 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; }
+    .top-utility .container { display: flex; justify-content: space-between; align-items: center; }
+    .btn-subscribe { border: 1px solid #000; padding: 4px 12px; font-weight: 700; transition: 0.3s; }
+    .btn-subscribe:hover { background: #000; color: #fff; }
 
-    .main-header { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 20px rgba(0,0,0,0.05); border-bottom: 2px solid var(--primary); }
-    .header-content { height: 80px; display: flex; justify-content: space-between; align-items: center; }
-    
-    .logo { display: flex; align-items: center; gap: 5px; font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; }
-    .logo span.ai { background: var(--secondary); color: #fff; padding: 2px 8px; border-radius: 6px; }
-    .logo span.news { color: var(--primary); }
+    .masthead { padding: 40px 0; border-bottom: 1px solid #ddd; text-align: center; position: relative; }
+    .masthead-title { font-family: var(--header-font); font-size: 4.5rem; letter-spacing: -2px; line-height: 1; text-transform: uppercase; }
+    .masthead-subtitle { font-size: 0.75rem; letter-spacing: 3px; font-weight: 700; margin-top: 10px; color: #666; }
 
-    /* Navigation */
-    .nav-links { display: flex; gap: 30px; }
-    .nav-links a { font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; position: relative; color: var(--text-main); }
-    .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--primary); transition: var(--transition); }
-    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .main-navigation { border-bottom: 3px double #000; background: #fff; position: sticky; top: 0; z-index: 1000; }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; min-height: 50px; }
+    .nav-links { display: flex; gap: 25px; margin: 0 auto; }
+    .nav-links a { font-family: var(--font-body); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #000; padding: 15px 0; }
+    .nav-links a:hover { color: var(--accent); }
 
-    /* Header Social & Auth */
-    .header-right { display: flex; gap: 20px; align-items: center; }
-    .header-social { display: flex; gap: 12px; align-items: center; padding-right: 20px; border-right: 1px solid var(--border); }
-    .header-social a { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: 0.3s; font-size: 0.85rem; }
-    .header-social a:hover { background: var(--primary); color: #fff; transform: translateY(-3px); }
+    .nav-social { display: flex; gap: 15px; align-items: center; }
+    .nav-social a { font-size: 0.9rem; color: #333; }
+    .nav-social a:hover { color: var(--accent); }
 
-    .header-auth { display: flex; gap: 10px; align-items: center; }
-    .btn-login { font-weight: 600; font-size: 0.9rem; color: var(--text-main); transition: 0.3s; }
-    .btn-login:hover { color: var(--primary); }
-    .btn-signup { background: var(--primary); color: #fff; padding: 8px 18px; border-radius: 25px; font-weight: 700; font-size: 0.85rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(230,0,0,0.2); }
-    .btn-signup:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(230,0,0,0.3); }
-
-    /* Mobile Menu */
-    .mobile-only { display: none; }
-    .mobile-btn { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--text-main); }
+    /* Mobile specific adjustments */
+    @media (max-width: 900px) {
+        .masthead-title { font-size: 2.5rem; }
+        .nav-links { display: none; }
+        .mobile-only { display: block; }
+    }
 
     /* --- TICKER --- */
     .ticker-wrap { background: var(--secondary); color: #fff; height: 40px; overflow: hidden; display: flex; font-weight: 500; }
@@ -391,7 +380,42 @@
         .hero-section { height: 320px; }
         .section-head h2 { font-size: 1.5rem; }
     }
+    /* --- NEWSPAPER GRID LAYOUT --- */
+    .section-divider { border-top: 1px solid #000; border-bottom: 3px double #000; padding: 5px 15px; font-family: var(--header-font); font-size: 1.5rem; text-transform: uppercase; text-align: left; margin: 40px 0 20px 0; }
     
+    .newspaper-row { display: grid; grid-template-columns: 250px 1fr 300px; gap: 30px; border-bottom: 1px solid #ddd; padding-bottom: 30px; }
+    
+    .headlines-col { display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #eee; padding-right: 15px; }
+    .headline-item { padding-bottom: 15px; border-bottom: 1px solid #eee; }
+    .headline-item:last-child { border-bottom: none; }
+    .headline-item h4 { font-family: var(--font-head); font-size: 1rem; line-height: 1.3; }
+    .headline-item .meta { font-size: 0.7rem; color: #777; margin-top: 5px; text-transform: uppercase; }
+
+    .main-story-col img { width: 100%; height: auto; object-fit: cover; border: 1px solid #000; padding: 3px; }
+    .main-story-col h2 { font-family: var(--header-font); font-size: 2.8rem; line-height: 1.1; margin: 20px 0; letter-spacing: -1px; }
+    .main-story-col p { font-size: 1.1rem; color: #333; }
+
+    .featured-list-col { display: flex; flex-direction: column; gap: 20px; }
+    .featured-v-card img { width: 100%; height: 200px; object-fit: cover; }
+    .featured-v-card h3 { font-family: var(--font-head); font-size: 1.4rem; margin-top: 10px; line-height: 1.2; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    @media (max-width: 1024px) {
+        .cat-grid { grid-template-columns: repeat(2, 1fr); }
+        .newspaper-row { grid-template-columns: 1fr; }
+        .headlines-col { border-right: none; padding-right: 0; }
+    }
+    @media (max-width: 600px) {
+        .cat-grid { grid-template-columns: 1fr; }
+    }
+
+    .sidebar-newspaper { margin-top: 40px; border-top: 1px solid #000; padding-top: 20px; }
+    
+    /* Post Cards in Category Grid */
+    .cat-card h4 { font-family: var(--font-head); font-size: 1.1rem; margin-top: 10px; line-height: 1.3; }
+    .cat-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: grayscale(20%); transition: 0.3s; }
+    .cat-card:hover img { filter: grayscale(0%); }
+
     ]]></b:skin>
 </head>
 
@@ -415,24 +439,42 @@
 </nav>
 </div>
 
-<!-- HEADER -->
-<header class="main-header">
-<div class="container header-content">
-<div class="logo">
-<a href="/" style="display:flex; align-items:center; gap:5px;">
-<span class="ai">AI</span>
-<span class="news">NEWS</span>
-</a>
+<!-- HEADER REDESIGN -->
+<div class="top-utility">
+<div class="container">
+<div id="today-date" style="font-weight:700;">Loading Date...</div>
+<div style="display:flex; gap:20px; align-items:center;">
+<div id="auth-container-top" style="display:flex; gap:15px;">
+<!-- Auth state will populate here or in nav -->
 </div>
-<nav class="nav-links">
-<a href="/">Home</a>
+<a href="#" class="btn-subscribe">SUBSCRIBE</a>
+</div>
+</div>
+</div>
+
+<div class="masthead">
+<div class="container">
+<h1 class="masthead-title">The AI News</h1>
+<div class="masthead-subtitle">UNIQUE AND IMPRESSIVE NEWSPAPER PORTAL . SINCE 2026</div>
+</div>
+</div>
+
+<nav class="main-navigation">
+<div class="container nav-container">
+<button class="mobile-btn mobile-only" onclick="toggleMobileMenu()">
+<i class="fas fa-bars"></i>
+</button>
+
+<div class="nav-links">
+<a href="/">Posts</a>
 <a href="/search/label/Technology">Technology</a>
 <a href="/search/label/Business">Business</a>
 <a href="/search/label/Science">Science</a>
 <a href="/search/label/World">World</a>
-</nav>
-<div class="header-right">
-<div class="header-social">
+<a href="/search/label/Opinion">Opinion</a>
+</div>
+
+<div class="nav-social">
 <a href="#">
 <i class="fab fa-facebook-f"></i>
 </a>
@@ -442,19 +484,25 @@
 <a href="#">
 <i class="fab fa-youtube"></i>
 </a>
+<a href="#">
+<i class="fab fa-instagram"></i>
+</a>
+<div id="auth-container" style="margin-left:15px;">
+<!-- Login Link -->
 </div>
+</div>
+</div>
+</nav>
 
-<div class="header-auth" id="auth-container">
-<a class="btn-login" href="#" onclick="loginWithGoogle()">Log In</a>
-<a class="btn-signup" href="#" onclick="loginWithGoogle()">Sign Up</a>
-</div>
-
-<button class="mobile-btn mobile-only" onclick="toggleMobileMenu()">
-<i class="fas fa-bars"></i>
-</button>
-</div>
-</div>
-</header>
+<script>
+    // Set Today's Date
+    function setNewspaperDate() {
+        const d = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('today-date').innerText = d.toLocaleDateString('en-US', options);
+    }
+    document.addEventListener('DOMContentLoaded', setNewspaperDate);
+</script>
 
 <!-- MAIN CONTENT SECTIONS -->
 <b:section id='main-content'>
@@ -485,47 +533,55 @@
 </div>
 
 <main class="container">
-<!-- HERO (Conditional display in JS) -->
-<section class="hero-section animate-in delay-1" id="hero-section">
-<div style="width:100%; height:100%; background:#ddd;" class="skeleton"></div>
+<div id="homepage-content">
+<!-- TOP FEATURED SECTION -->
+<section class="newspaper-row" id="top-featured" style="display:none; margin-top:30px;">
+<!-- Left: Hot Headlines -->
+<div class="headlines-col" id="headlines-left"></div>
+<!-- Center: Main Story -->
+<div class="main-story-col" id="main-story-center"></div>
+<!-- Right: Featured List -->
+<div class="featured-list-col" id="featured-right"></div>
 </section>
 
-<!-- GRID -->
-<div class="content-grid animate-in delay-2">
-<!-- Feed -->
-<div class="news-feed">
-<div class="section-head"><h2 id="section-title">Latest Stories</h2></div>
+<!-- CATEGORY SECTIONS -->
+<section class="cat-section" id="world-news-section" style="display:none;">
+<div class="section-divider">WORLD NEWS</div>
+<div class="cat-grid" id="world-grid"></div>
+</section>
+
+<section class="cat-section" id="music-news-section" style="display:none;">
+<div class="section-divider">MUSIC &amp; ENTERTAINMENT</div>
+<div class="cat-grid" id="music-grid"></div>
+</section>
+
+<section class="cat-section" id="opinion-section" style="display:none;">
+<div class="section-divider">OPINION &amp; LIFESTYLE</div>
+<div class="cat-grid" id="opinion-grid"></div>
+</section>
+
+<!-- LATEST FEED (FOR LABEL PAGES OR BOTTOM OF HOME) -->
+<section id="general-feed">
+<div class="section-divider" id="section-title">LATEST STORIES</div>
 <div class="news-grid" id="news-grid">
-<!-- Skeleton Cards -->
-<div class="news-card"><div class="card-thumb skeleton sk-img"></div><div class="card-body"><div class="skeleton sk-text"></div><div class="skeleton sk-text short"></div></div></div>
-<div class="news-card"><div class="card-thumb skeleton sk-img"></div><div class="card-body"><div class="skeleton sk-text"></div><div class="skeleton sk-text short"></div></div></div>
+<!-- Skeleton -->
+<div class="news-card"><div class="card-thumb skeleton sk-img"></div><div class="card-body"><div class="skeleton sk-text"></div></div></div>
 </div>
+<div id="pagination" style="text-align:center; padding: 40px 0;"></div>
+</section>
 </div>
-<!-- Sidebar -->
-<aside class="sidebar">
+
+<!-- SIDEBAR (Only shown on certain pages if needed, but keeping for comments) -->
+<aside class="sidebar-newspaper">
 <div class="widget">
 <h3>Trending Now</h3>
-<div class="trending-list" id="trending-list">
-<div class="trending-item">Loading...</div>
+<div class="trending-list" id="trending-list"></div>
 </div>
-</div>
-
 <div class="widget">
 <h3>Recent Comments</h3>
-<div class="sidebar-comments" id="sidebar-comments">
-<p style="font-size:0.85rem; color:#888;">No comments yet. Be the first!</p>
-</div>
-</div>
-
-<div class="widget">
-<h3>Sponsored</h3>
-<div style='background: #f0f0f0; border: 1px dashed #ccc; padding: 40px 10px; color: #888; border-radius: 8px; text-align: center;'>
-<strong>AdSense Sidebar</strong><br/>
-        (Square/Vertical)
-    </div>
+<div class="sidebar-comments" id="sidebar-comments"></div>
 </div>
 </aside>
-</div>
 </main>
 
 </div>
@@ -586,11 +642,94 @@ function parseBloggerData(json) {
 
 async function initNewsApp() {
     allPosts = await fetchBloggerPosts();
-    renderPage(1);
     renderTrending();
     renderTicker();
+    
+    // Check if we are on the Home Page (no label search)
+    const isHomePage = !window.location.pathname.includes('/search/label/');
+    
+    if (isHomePage) {
+        renderNewspaperHome(allPosts);
+    } else {
+        // Clear homepage special sections
+        const hp = document.getElementById('homepage-content');
+        if(hp) {
+             const specialSections = hp.querySelectorAll('.cat-section, .newspaper-row');
+             specialSections.forEach(s => s.style.display = 'none');
+        }
+        renderPage(1);
+    }
+
     if(typeof loadPostComments === 'function') loadPostComments();
     if(typeof loadSidebarComments === 'function') loadSidebarComments();
+}
+
+function renderNewspaperHome(posts) {
+    if (!posts || posts.length === 0) return;
+
+    // 1. TOP FEATURED SECTION
+    const topSection = document.getElementById('top-featured');
+    if (topSection) {
+        topSection.style.display = 'grid';
+        
+        // Left Headlines (Top 2-5)
+        const leftCol = document.getElementById('headlines-left');
+        const middleHeadlinePosts = posts.slice(1, 6);
+        leftCol.innerHTML = middleHeadlinePosts.map(p => `
+            <div class="headline-item">
+<a href="${p.link}"><h4>${p.title}</h4></a>
+<div class="meta">${p.date} • ${p.category}</div>
+</div>
+        `).join('');
+
+        // Center Main Story (Top 1)
+        const mainPost = posts[0];
+        const centerCol = document.getElementById('main-story-center');
+        centerCol.innerHTML = `
+            <a href="${mainPost.link}"><img src="${mainPost.image}" /></a>
+<div class="meta" style="margin-top:15px; font-weight:700; color:var(--accent);">${mainPost.category}</div>
+<a href="${mainPost.link}"><h2>${mainPost.title}</h2></a>
+<p>${mainPost.desc}</p>
+        `;
+
+        // Right Featured (Top 6-8)
+        const rightCol = document.getElementById('featured-right');
+        const rightPosts = posts.slice(6, 8);
+        rightCol.innerHTML = rightPosts.map(p => `
+            <div class="featured-v-card">
+<a href="${p.link}"><img src="${p.image}" /></a>
+<a href="${p.link}"><h3>${p.title}</h3></a>
+</div>
+        `).join('');
+    }
+
+    // 2. CATEGORY SECTIONS
+    const worldPosts = posts.filter(p => p.category.toLowerCase().includes('world')).slice(0, 4);
+    renderCategorySection('world-news-section', 'world-grid', worldPosts);
+
+    const musicPosts = posts.filter(p => p.category.toLowerCase().includes('music') || p.category.toLowerCase().includes('entertainment')).slice(0, 4);
+    renderCategorySection('music-news-section', 'music-grid', musicPosts);
+
+    const opinionPosts = posts.filter(p => p.category.toLowerCase().includes('opinion') || p.category.toLowerCase().includes('lifestyle')).slice(0, 4);
+    renderCategorySection('opinion-section', 'opinion-grid', opinionPosts);
+
+    // 3. REMAINING FEED (Bottom of Home)
+    renderPage(1); // Regular grid for remaining posts
+}
+
+function renderCategorySection(sectionId, gridId, posts) {
+    const section = document.getElementById(sectionId);
+    const grid = document.getElementById(gridId);
+    if (!section || !grid || posts.length === 0) return;
+    
+    section.style.display = 'block';
+    grid.innerHTML = posts.map(p => `
+        <div class="cat-card animate-in">
+<a href="${p.link}"><img src="${p.image}" /></a>
+<a href="${p.link}"><h4>${p.title}</h4></a>
+<div style="font-size:0.7rem; color:#777; margin-top:5px;">${p.date}</div>
+</div>
+    `).join('');
 }
 
 // --- SLIDER LOGIC ---
@@ -681,49 +820,31 @@ function resetAutoSlide() {
 
 function renderPage(page) {
     currentPage = page;
-    const heroEl = document.getElementById('hero-section');
     const gridEl = document.getElementById('news-grid');
+    const isHomePage = !window.location.pathname.includes('/search/label/');
     
-    if (!heroEl || !gridEl) return;
+    if (!gridEl) return;
 
-    if (allPosts.length > 0) {
-        // Render Slider ONLY on first load (or page 1)
-        if (page === 1) {
-             renderHeroSlider(allPosts);
-        } else {
-             heroEl.style.display = 'none'; // Hide slider on other pages if you want
-        }
-    } else {
-        heroEl.style.display = 'none';
+    if (allPosts.length === 0) {
         gridEl.innerHTML = '<p>No news found.</p>';
         return;
     }
 
-    // Pagination Logic for Grid
-    // Slider takes top 5 posts. So Grid normally starts from index 5.
-    // BUT if we have few posts, don't skip them, show them in grid too.
-    let startIdx = 5;
-    if (allPosts.length <= 5) {
-        startIdx = 0;
-    }
+    // If Home Page, we already showed 0-10 in top sections. Start grid from 10.
+    // If Label Page, start from 0.
+    let startIdx = isHomePage ? 10 : 0;
     
-    const gridPosts = allPosts.slice(startIdx); 
-    const totalPages = Math.ceil(gridPosts.length / postsPerPage);
+    const feedPosts = allPosts.slice(startIdx); 
+    const totalPages = Math.ceil(feedPosts.length / postsPerPage);
     
     const start = (page - 1) * postsPerPage;
     const end = start + postsPerPage;
-    const currentGridCheck = gridPosts.slice(start, end);
+    const currentBatch = feedPosts.slice(start, end);
     
     gridEl.innerHTML = '';
     
-    // Scroll to top
-    if(page > 1) {
-        const contentGrid = document.querySelector('.content-grid');
-        if(contentGrid) contentGrid.scrollIntoView({behavior: 'smooth'});
-    }
-
-    if (currentGridCheck.length > 0) {
-        currentGridCheck.forEach(item => {
+    if (currentBatch.length > 0) {
+        currentBatch.forEach(item => {
             gridEl.innerHTML += `
                <div class="news-card animate-in">
 <a href="${item.link}" class="card-thumb"><img src="${item.image}"></a>
@@ -731,10 +852,12 @@ function renderPage(page) {
 <span class="card-tag">${item.category}</span>
 <a href="${item.link}"><h3 class="card-title">${item.title}</h3></a>
 <p class="card-desc">${item.desc}</p>
-<div class="card-footer"><span>${item.date}</span><a href="${item.link}" style="color:var(--primary);">Read More <i class="fas fa-arrow-right"></i></a></div>
+<div class="card-footer"><span>${item.date}</span><a href="${item.link}" style="color:#000; font-weight:700;">Read More</a></div>
 </div>
 </div>`;
         });
+    } else if (page === 1) {
+        gridEl.innerHTML = '<p style="padding:20px; text-align:center;">More stories coming soon...</p>';
     }
 
     // Render Pagination Controls
@@ -966,7 +1089,20 @@ auth.onAuthStateChanged(user => {
 });
 
 // Handle Redirect Result for better reliability
-auth.getRedirectResult().catch(error => console.error("Redirect Error:", error));
+auth.getRedirectResult()
+    .then(result => {
+        if (result.user) {
+            console.log("Login Successful:", result.user.displayName);
+        }
+    })
+    .catch(error => {
+        console.error("Redirect Error:", error);
+        if(error.code === 'auth/operation-not-allowed') {
+            alert("Error: Google Login is NOT enabled in your Firebase Console yet. Please enable it in 'Sign-in method' tab.");
+        } else {
+            alert("Login Error: " + error.message);
+        }
+    });
 
 document.addEventListener('DOMContentLoaded', initNewsApp);
 </script>]]></b:widget-setting>
