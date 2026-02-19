@@ -409,7 +409,9 @@
 <a href="/search/label/Science" onclick="toggleMobileMenu()">Science</a>
 <a href="/search/label/World" onclick="toggleMobileMenu()">World</a>
 <hr style="width:50%; border:0; border-top:1px solid #333; margin:10px 0;"/>
+<div id="mobile-auth-container" style="margin-top:10px;">
 <a href="#" onclick="loginWithGoogle(); toggleMobileMenu();" style="color:var(--primary);">Sign In</a>
+</div>
 </nav>
 </div>
 
@@ -926,11 +928,12 @@ function logout() {
 
 auth.onAuthStateChanged(user => {
     const authContainer = document.getElementById('auth-container');
+    const mobileAuthContainer = document.getElementById('mobile-auth-container');
     const commentInput = document.getElementById('comment-input-container');
     const loginToComment = document.getElementById('login-to-comment');
     
     if (user) {
-        // Logged In
+        // Logged In - Update Header
         authContainer.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
 <img src="${user.photoURL}" style="width:30px; height:30px; border-radius:50%; border:2px solid var(--primary);"/>
@@ -938,19 +941,32 @@ auth.onAuthStateChanged(user => {
 <a href="#" onclick="logout()" style="font-size:0.8rem; color:var(--primary);">Logout</a>
 </div>
         `;
+        // Update Mobile Nav
+        if(mobileAuthContainer) {
+            mobileAuthContainer.innerHTML = `<a href="#" onclick="logout(); toggleMobileMenu();" style="color:var(--primary);">Logout (${user.displayName.split(' ')[0]})</a>`;
+        }
+        
         if(commentInput) commentInput.style.display = 'block';
         if(loginToComment) loginToComment.style.display = 'none';
         if(document.getElementById('current-user-avatar')) document.getElementById('current-user-avatar').src = user.photoURL;
     } else {
         // Logged Out
-        authContainer.innerHTML = `
+        const loginButtons = `
             <a class="btn-login" href="#" onclick="loginWithGoogle()">Log In</a>
 <a class="btn-signup" href="#" onclick="loginWithGoogle()">Sign Up</a>
         `;
+        authContainer.innerHTML = loginButtons;
+        if(mobileAuthContainer) {
+            mobileAuthContainer.innerHTML = `<a href="#" onclick="loginWithGoogle(); toggleMobileMenu();" style="color:var(--primary);">Sign In</a>`;
+        }
+        
         if(commentInput) commentInput.style.display = 'none';
         if(loginToComment) loginToComment.style.display = 'block';
     }
 });
+
+// Handle Redirect Result for better reliability
+auth.getRedirectResult().catch(error => console.error("Redirect Error:", error));
 
 document.addEventListener('DOMContentLoaded', initNewsApp);
 </script>]]></b:widget-setting>
