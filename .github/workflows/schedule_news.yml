@@ -2,7 +2,7 @@ name: Auto News Poster
 
 on:
   schedule:
-    - cron: '*/20 * * * *'  # Run every 20 minutes
+    - cron: '*/30 * * * *'  # Run every 30 minutes (Safest for Blogger 100/day limit)
   workflow_dispatch:      # Allow manual trigger from Mobile App
 
 concurrency:

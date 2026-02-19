@@ -55,7 +55,7 @@ def main():
     
     posted_urls = load_posted_articles()
     posts_count = 0
-    MAX_POSTS_PER_CYCLE = 4
+    MAX_POSTS_PER_CYCLE = 2
     
     for query, category, country, label_text in TOPICS:
         if posts_count >= MAX_POSTS_PER_CYCLE:
