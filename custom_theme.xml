@@ -416,6 +416,20 @@
     .cat-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: grayscale(20%); transition: 0.3s; }
     .cat-card:hover img { filter: grayscale(0%); }
 
+    /* Featured Center Carousel */
+    .featured-carousel { width: 100%; position: relative; overflow: hidden; height: 500px; border: 1px solid #000; padding: 3px; }
+    .carousel-track { width: 100%; height: 100%; position: relative; }
+    .featured-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease; z-index: 1; }
+    .featured-slide.active { opacity: 1; z-index: 2; }
+    .featured-slide img { width: 100%; height: 100%; object-fit: cover; }
+    .carousel-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 20px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); color: #fff; z-index: 3; }
+    .carousel-caption .cat { font-weight: 700; color: var(--accent); text-transform: uppercase; font-size: 0.75rem; }
+    .carousel-caption h2 { font-family: var(--header-font); font-size: 2.2rem; line-height: 1.1; margin: 10px 0; }
+    
+    .carousel-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+    .c-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: 1px solid rgba(0,0,0,0.2); }
+    .c-dot.active { background: #fff; transform: scale(1.2); }
+
     ]]></b:skin>
 </head>
 
@@ -672,29 +686,51 @@ function renderNewspaperHome(posts) {
     if (topSection) {
         topSection.style.display = 'grid';
         
-        // Left Headlines (Top 2-5)
+        // Left Headlines (Posts 5-9)
         const leftCol = document.getElementById('headlines-left');
-        const middleHeadlinePosts = posts.slice(1, 6);
-        leftCol.innerHTML = middleHeadlinePosts.map(p => `
+        const headlinePosts = posts.slice(5, 10);
+        leftCol.innerHTML = headlinePosts.map(p => `
             <div class="headline-item">
 <a href="${p.link}"><h4>${p.title}</h4></a>
 <div class="meta">${p.date} • ${p.category}</div>
 </div>
         `).join('');
 
-        // Center Main Story (Top 1)
-        const mainPost = posts[0];
+        // Center Carousel (Top 5 Posts)
         const centerCol = document.getElementById('main-story-center');
-        centerCol.innerHTML = `
-            <a href="${mainPost.link}"><img src="${mainPost.image}" /></a>
-<div class="meta" style="margin-top:15px; font-weight:700; color:var(--accent);">${mainPost.category}</div>
-<a href="${mainPost.link}"><h2>${mainPost.title}</h2></a>
-<p>${mainPost.desc}</p>
-        `;
+        const carouselPosts = posts.slice(0, 5);
+        
+        let carouselHtml = `
+            <div class="featured-carousel">
+<div class="carousel-track">`;
+                
+        carouselPosts.forEach((p, idx) => {
+            const activeClass = idx === 0 ? 'active' : '';
+            carouselHtml += `
+                <div class="featured-slide ${activeClass}" data-idx="${idx}">
+<a href="${p.link}"><img src="${p.image}" /></a>
+<div class="carousel-caption">
+<span class="cat">${p.category}</span>
+<a href="${p.link}"><h2 style="color:white; margin-top:5px;">${p.title}</h2></a>
+<p style="font-size:0.85rem; opacity:0.9; margin-top:5px;">${p.desc}</p>
+</div>
+</div>`;
+        });
+        
+        carouselHtml += `</div>
+<div class="carousel-dots">`;
+        carouselPosts.forEach((_, idx) => {
+            const activeClass = idx === 0 ? 'active' : '';
+            carouselHtml += `<span class="c-dot ${activeClass}" onclick="moveFeaturedSlide(${idx})"></span>`;
+        });
+        carouselHtml += `</div></div>`;
+        
+        centerCol.innerHTML = carouselHtml;
+        startFeaturedAutoSlide(carouselPosts.length);
 
-        // Right Featured (Top 6-8)
+        // Right Featured (Posts 10-11)
         const rightCol = document.getElementById('featured-right');
-        const rightPosts = posts.slice(6, 8);
+        const rightPosts = posts.slice(10, 12);
         rightCol.innerHTML = rightPosts.map(p => `
             <div class="featured-v-card">
 <a href="${p.link}"><img src="${p.image}" /></a>
@@ -730,6 +766,34 @@ function renderCategorySection(sectionId, gridId, posts) {
 <div style="font-size:0.7rem; color:#777; margin-top:5px;">${p.date}</div>
 </div>
     `).join('');
+}
+
+// --- FEATURED CAROUSEL LOGIC ---
+let fCurrentSlide = 0;
+let fInterval;
+
+function moveFeaturedSlide(idx) {
+    const slides = document.querySelectorAll('.featured-slide');
+    const dots = document.querySelectorAll('.c-dot');
+    if(slides.length === 0) return;
+    
+    slides[fCurrentSlide].classList.remove('active');
+    dots[fCurrentSlide].classList.remove('active');
+    
+    fCurrentSlide = idx;
+    
+    slides[fCurrentSlide].classList.add('active');
+    dots[fCurrentSlide].classList.add('active');
+    
+    clearInterval(fInterval);
+    startFeaturedAutoSlide(slides.length);
+}
+
+function startFeaturedAutoSlide(count) {
+    fInterval = setInterval(() => {
+        let next = (fCurrentSlide + 1) % count;
+        moveFeaturedSlide(next);
+    }, 6000); // 6 Seconds
 }
 
 // --- SLIDER LOGIC ---
