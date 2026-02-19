@@ -33,6 +33,20 @@ def init_db():
         logging.error(f"Failed to initialize Firebase: {e}")
         return None
 
+def normalize_url(url):
+    """
+    Strips tracking parameters and trailing slashes for consistent comparison.
+    """
+    if not url: return ""
+    try:
+        # Strip query params
+        clean_url = url.split('?')[0]
+        # Strip trailing slash
+        clean_url = clean_url.rstrip('/')
+        return clean_url.lower()
+    except:
+        return url.lower()
+
 def save_article(article_data):
     """
     Saves an article dictionary to the 'articles' collection in Firestore.
@@ -42,11 +56,16 @@ def save_article(article_data):
         return # Skip if DB not available
         
     try:
+        title = article_data.get('title', 'Untitled')
+        url = article_data.get('url', '')
+        
         # Prepare data record
         record = {
-            'title': article_data.get('title', 'Untitled'),
+            'title': title,
+            'title_lower': title.lower(), # For faster case-insensitive search
             'content': article_data.get('content', ''),
-            'url': article_data.get('url', ''), 
+            'url': url, 
+            'url_normalized': normalize_url(url),
             'image_url': article_data.get('image_url', ''), 
             'created_at': datetime.now(),
             'keywords': article_data.get('keywords', []),
@@ -55,22 +74,33 @@ def save_article(article_data):
         
         # Add to collection
         db.collection('articles').add(record)
-        logging.info(f"Article '{record['title']}' saved to Firebase.")
+        logging.info(f"Article '{title}' saved to Firebase.")
         
     except Exception as e:
         logging.error(f"Error saving to Firebase: {e}")
 
-def is_article_posted(url):
+def is_article_posted(url, title=None):
     """
-    Checks if an article with the given URL exists in the Firebase database.
+    Checks if an article with the given URL or Title exists in the Firebase database.
     """
     db = init_db()
     if not db:
         return False # Fallback to local if DB fails
         
     try:
-        docs = db.collection('articles').where('url', '==', url).limit(1).get()
-        return len(docs) > 0
+        # 1. Check by Normalized URL
+        norm_url = normalize_url(url)
+        url_docs = db.collection('articles').where('url_normalized', '==', norm_url).limit(1).get()
+        if len(url_docs) > 0:
+            return True
+            
+        # 2. Check by Title (Safety Fallback)
+        if title:
+            title_docs = db.collection('articles').where('title_lower', '==', title.lower()).limit(1).get()
+            if len(title_docs) > 0:
+                return True
+                
+        return False
     except Exception as e:
         logging.error(f"Error checking Firebase for duplicates: {e}")
         return False

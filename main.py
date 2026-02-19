@@ -69,10 +69,11 @@ def main():
                 break
 
             url = article['url']
+            title = article['title']
             
-            # Check if already posted (Local + Firebase)
-            if url in posted_urls or firebase_db.is_article_posted(url):
-                logging.info(f"Skipping duplicate article: {article['title']}")
+            # Check if already posted (Local + Firebase + Title check)
+            if url in posted_urls or firebase_db.is_article_posted(url, title):
+                logging.info(f"Skipping duplicate article: {title}")
                 continue
                 
             logging.info(f"Processing ({label_text}): {article['title']}")
