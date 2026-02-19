@@ -862,7 +862,6 @@ function loadPostComments() {
     
     db.collection('comments')
         .where('postId', '==', currentPostId)
-        .orderBy('createdAt', 'desc')
         .onSnapshot(snapshot => {
             if (snapshot.empty) {
                 listEl.innerHTML = '<p style="color:#888;">No comments yet. Be the first to share your thoughts!</p>';
@@ -891,7 +890,6 @@ function loadSidebarComments() {
     if (!sideEl) return;
     
     db.collection('comments')
-        .orderBy('createdAt', 'desc')
         .limit(10)
         .onSnapshot(snapshot => {
             if (snapshot.empty) return;
