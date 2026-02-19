@@ -811,12 +811,13 @@ function toggleMobileMenu() {
 
 // --- FIREBASE AUTH LOGIC ---
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDexybB2cdAD33kj_SW98raTEVIucs9E0o",
+    authDomain: "ainews-c6569.firebaseapp.com",
+    projectId: "ainews-c6569",
+    storageBucket: "ainews-c6569.firebasestorage.app",
+    messagingSenderId: "811373764467",
+    appId: "1:811373764467:web:805200447c94672a65af06",
+    measurementId: "G-67NZ46J3BY"
 };
 
 // Initialize Firebase
