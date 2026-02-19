@@ -409,7 +409,7 @@
 <a href="/search/label/Science" onclick="toggleMobileMenu()">Science</a>
 <a href="/search/label/World" onclick="toggleMobileMenu()">World</a>
 <hr style="width:50%; border:0; border-top:1px solid #333; margin:10px 0;"/>
-<a href="https://www.blogger.com/go/signin" style="color:var(--primary);">Sign In</a>
+<a href="#" onclick="loginWithGoogle(); toggleMobileMenu();" style="color:var(--primary);">Sign In</a>
 </nav>
 </div>
 
@@ -442,9 +442,9 @@
 </a>
 </div>
 
-<div class="header-auth">
-<a class="btn-login" href="https://www.blogger.com/go/signin">Log In</a>
-<a class="btn-signup" href="https://www.blogger.com/go/createblog">Sign Up</a>
+<div class="header-auth" id="auth-container">
+<a class="btn-login" href="#" onclick="loginWithGoogle()">Log In</a>
+<a class="btn-signup" href="#" onclick="loginWithGoogle()">Sign Up</a>
 </div>
 
 <button class="mobile-btn mobile-only" onclick="toggleMobileMenu()">
