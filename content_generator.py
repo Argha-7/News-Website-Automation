@@ -91,14 +91,14 @@ def get_youtube_video(query):
             if unique_ids:
                 video_id = unique_ids[0]
                 embed_code = f'<div class="video-container" style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; max-width:100%; margin-top:30px; margin-bottom:20px;"><iframe src="https://www.youtube.com/embed/{video_id}" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allowfullscreen></iframe></div>'
-                return embed_code
+                return embed_code, video_id
                 
         logging.warning("No video ID found in YouTube search results.")
-        return ""
+        return "", None
 
     except Exception as e:
         logging.error(f"Error fetching YouTube video: {e}")
-    return ""
+    return "", None
 
 def generate_blog_post(article_title, article_description, article_url, article_image_url=None):
     """
@@ -179,18 +179,23 @@ def generate_blog_post(article_title, article_description, article_url, article_
         
         # 1. Add YouTube Video at Top (Replaced Position)
         video_query = f"{article_title} trailer news"
-        video_embed = get_youtube_video(video_query)
+        video_embed, video_id = get_youtube_video(video_query)
         if video_embed:
             content_data['content'] = f"<h3>Watch Related Video</h3>{video_embed}" + content_data['content']
 
         # 2. Add Image at Bottom (Replaced Position)
         if not article_image_url:
-            # Fallback to AI generated image if no image found
-            # Create a rich prompt for realistic news photography
-            clean_title = article_title[:80].replace("'", "").replace('"', '')
-            prompt = f"editorial news photography of {clean_title}, realistic, 4k, journalism style, highly detailed, dramatic lighting"
-            safe_prompt = urllib.parse.quote(prompt)
-            article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
+            if video_id:
+                # Fallback to YouTube thumbnail
+                article_image_url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+                logging.info(f"Using YouTube thumbnail as fallback image: {article_image_url}")
+            else:
+                # Fallback to AI generated image if no image found and no YouTube video
+                clean_title = article_title[:80].replace("'", "").replace('"', '')
+                prompt = f"editorial news photography of {clean_title}, realistic, 4k, journalism style, highly detailed, dramatic lighting"
+                safe_prompt = urllib.parse.quote(prompt)
+                article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
+                logging.info(f"Using AI generated image as fallback: {article_image_url}")
             
         img_tag = f'<img src="{article_image_url}" style="width:100%; border-radius:10px; margin-bottom:20px;">' # Move to TOP
         content_data['content'] = img_tag + content_data['content'] # Prepend
