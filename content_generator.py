@@ -155,7 +155,8 @@ def generate_blog_post(article_title, article_description, article_url, article_
        - "content_bengali": Full Bengali Summary (HTML).
        - "labels": Comma-separated tags.
     
-    IMPORTANT: Return ONLY the raw JSON string. Do NOT use markdown code blocks.
+    IMPORTANT: Return ONLY the raw JSON string. Do NOT use markdown code blocks. 
+    Ensure all internal double quotes in the content and titles are correctly escaped with a backslash (e.g., \"Example\").
     """
 
     try:
@@ -166,7 +167,7 @@ def generate_blog_post(article_title, article_description, article_url, article_
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
-            max_tokens=3000, # Increased for multi-language
+            max_tokens=4000, # Increased from 3000 to prevent truncation
             top_p=1,
             stream=False,
             stop=None,
@@ -189,8 +190,14 @@ def generate_blog_post(article_title, article_description, article_url, article_
         # We keep common ones like \n (10) and \r (13) but replace others with a space
         text_response = "".join(ch if ord(ch) >= 32 or ch in '\n\r\t' else " " for ch in text_response)
 
+        # 4. Handle Truncation: Ensure there is a closing brace if the model cut off early
+        if not text_response.strip().endswith('}'):
+            logging.warning("JSON appears truncated, attempting to close it.")
+            text_response = text_response.strip() + '"}' # Simple heuristic closure
+
         try:
             # use strict=False to allow unescaped control characters inside strings
+            # and enable more lenient parsing
             content_data = json.loads(text_response, strict=False)
         except json.JSONDecodeError as decode_error:
             logging.error(f"JSON Decode Error at line {decode_error.lineno} column {decode_error.colno}: {decode_error.msg}")

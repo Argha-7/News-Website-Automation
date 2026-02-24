@@ -88,15 +88,16 @@ def is_article_posted(url, title=None):
         return False # Fallback to local if DB fails
         
     try:
+        from google.cloud.firestore_v1.base_query import FieldFilter
         # 1. Check by Normalized URL
         norm_url = normalize_url(url)
-        url_docs = db.collection('articles').where('url_normalized', '==', norm_url).limit(1).get()
+        url_docs = db.collection('articles').where(filter=FieldFilter('url_normalized', '==', norm_url)).limit(1).get()
         if len(url_docs) > 0:
             return True
             
         # 2. Check by Title (Safety Fallback)
         if title:
-            title_docs = db.collection('articles').where('title_lower', '==', title.lower()).limit(1).get()
+            title_docs = db.collection('articles').where(filter=FieldFilter('title_lower', '==', title.lower())).limit(1).get()
             if len(title_docs) > 0:
                 return True
                 
