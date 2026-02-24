@@ -4,6 +4,12 @@ google-auth-oauthlib
 google-auth-httplib2
 google-api-python-client
 requests
+groq
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+requests
 beautifulsoup4
 python-dotenv
 youtube-search-python
@@ -11,3 +17,4 @@ feedparser
 dateparser
 googlenewsdecoder
 firebase-admin
+requests_oauthlib

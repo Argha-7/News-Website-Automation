@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from news_fetcher_rss import fetch_trending_news
 from content_generator import generate_blog_post
 from blogger_poster import post_to_blogger
+from social_poster import post_to_facebook
 import firebase_db
 
 # Configure logging
@@ -107,18 +108,23 @@ def main():
             
             final_content = generated_content['content']
             
-            post_result = post_to_blogger(
+            blogger_url = post_to_blogger(
                 BLOG_ID,
                 generated_content['title'],
                 final_content,
                 labels
             )
             
-            if post_result:
-                logging.info(f"Successfully posted: {generated_content['title']}")
-                save_posted_article(url)
+            if blogger_url:
+                logging.info(f"Successfully posted! URL: {blogger_url}")
+                # Save to history
+                save_posted_article(url) # Use 'url' as it's the original news URL
                 posted_urls.append(url) 
                 posts_count += 1
+                
+                # Cross-post to Facebook
+                logging.info(f"Attempting to cross-post to Facebook: {title}")
+                post_to_facebook(generated_content['title'], blogger_url)
                 
                 # Rate limiting (10 seconds - reduced for faster CI execution)
                 time.sleep(10)
