@@ -173,9 +173,29 @@ def generate_blog_post(article_title, article_description, article_url, article_
         )
 
         text_response = completion.choices[0].message.content
+        
+        # 1. Strip markdown code blocks if present
         text_response = text_response.replace('```json', '').replace('```', '').strip()
         
-        content_data = json.loads(text_response)
+        # 2. Extract JSON using Regex (greedy match between first { and last })
+        try:
+            match = re.search(r'(\{.*\})', text_response, re.DOTALL)
+            if match:
+                text_response = match.group(0)
+        except:
+            pass # Keep original if regex fails
+            
+        # 3. Clean invalid control characters (ASCII 0-31) that often break JSON parsers
+        # We keep common ones like \n (10) and \r (13) but replace others with a space
+        text_response = "".join(ch if ord(ch) >= 32 or ch in '\n\r\t' else " " for ch in text_response)
+
+        try:
+            # use strict=False to allow unescaped control characters inside strings
+            content_data = json.loads(text_response, strict=False)
+        except json.JSONDecodeError as decode_error:
+            logging.error(f"JSON Decode Error at line {decode_error.lineno} column {decode_error.colno}: {decode_error.msg}")
+            # Fallback: attempt to find and fix common issues or return partial failure
+            raise decode_error
         
         # 1. Add YouTube Video at Top (Replaced Position)
         video_query = f"{article_title} trailer news"
