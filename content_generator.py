@@ -147,12 +147,10 @@ def generate_blog_post(article_title, article_description, article_url, article_
        - "User Feedback" question (English).
     3. **Multi-Language Support**:
        - Provide a concise summary of the same news in **Hindi** (under a section called 'Hindi News').
-       - Provide a concise summary of the same news in **Bengali** (under a section called 'Bengali News').
     4. **Output Format**: Valid JSON with keys: 
        - "title": SEO Title.
        - "content": Full English Blog Post (HTML).
        - "content_hindi": Full Hindi Summary (HTML).
-       - "content_bengali": Full Bengali Summary (HTML).
        - "labels": Comma-separated tags.
     
     IMPORTANT: Return ONLY the raw JSON string. Do NOT use markdown code blocks. 
@@ -230,9 +228,6 @@ def generate_blog_post(article_title, article_description, article_url, article_
         # 3. Append Hindi & Bengali Content
         if 'content_hindi' in content_data and content_data['content_hindi']:
             content_data['content'] += f'<hr style="margin:40px 0;"><h2>🇮🇳 हिंदी में पढ़ें (News in Hindi)</h2>{content_data["content_hindi"]}'
-            
-        if 'content_bengali' in content_data and content_data['content_bengali']:
-            content_data['content'] += f'<hr style="margin:40px 0;"><h2>🇧🇩 বাংলায় পড়ুন (News in Bengali)</h2>{content_data["content_bengali"]}'
             
         return content_data
 
