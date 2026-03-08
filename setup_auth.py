@@ -6,23 +6,26 @@ def setup_token():
     """
     Reconstructs token.json from environment variables for CI/CD.
     """
-    refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN")
-    client_id = os.environ.get("BLOGGER_CLIENT_ID")
-    client_secret = os.environ.get("BLOGGER_CLIENT_SECRET")
+    # Use .strip() to remove accidental spaces from copy-pasting
+    refresh_token = os.environ.get("BLOGGER_REFRESH_TOKEN", "").strip()
+    client_id = os.environ.get("BLOGGER_CLIENT_ID", "").strip()
+    client_secret = os.environ.get("BLOGGER_CLIENT_SECRET", "").strip()
     
     if not all([refresh_token, client_id, client_secret]):
         print("CRITICAL: Missing required Blogger OAuth secrets in environment.")
+        print(f"DEBUG: Refresh Token Length: {len(refresh_token)}")
+        print(f"DEBUG: Client ID Length: {len(client_id)}")
+        print(f"DEBUG: Client Secret Length: {len(client_secret)}")
         return False
 
+    print(f"DEBUG: Using Client ID starting with: {client_id[:10]}...")
+
     token_data = {
-        "token": None, # Will be filled by refresh
         "refresh_token": refresh_token,
         "token_uri": "https://oauth2.googleapis.com/token",
         "client_id": client_id,
         "client_secret": client_secret,
-        "scopes": ["https://www.googleapis.com/auth/blogger"],
-        "universe_domain": "googleapis.com",
-        "account": ""
+        "scopes": ["https://www.googleapis.com/auth/blogger"]
     }
     
     try:
