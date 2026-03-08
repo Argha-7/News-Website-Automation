@@ -47,7 +47,7 @@ def analyze_keywords(topic, context_text=""):
              prompt = f"Analyze the topic '{topic}'. Return top 5 SEO keywords with high search volume and low competition for a news blog. Return ONLY the comma-separated list of keywords, nothing else."
         
         completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.5,
             max_tokens=60,
@@ -161,7 +161,7 @@ def generate_blog_post(article_title, article_description, article_url, article_
 
     try:
         completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": "You are a helpful AI assistant that outputs strictly valid JSON."},
                 {"role": "user", "content": prompt}

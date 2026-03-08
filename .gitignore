@@ -49,3 +49,12 @@ posted_articles.json
 
 # PyCharm
 .idea/
+
+# Temporary / Secret Files
+refresh_token.txt
+env_dump.txt
+token.json
+token.pickle
+*.txt
+!requirements.txt
+!README.md

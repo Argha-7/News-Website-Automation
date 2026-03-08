@@ -4,7 +4,8 @@ import json
 import time
 import logging
 from dotenv import load_dotenv
-from news_fetcher_rss import fetch_trending_news
+from news_fetcher_rss import fetch_trending_news, get_og_image
+from googlenewsdecoder import new_decoderv1
 from content_generator import generate_blog_post
 from blogger_poster import post_to_blogger
 from social_poster import post_to_facebook
@@ -63,36 +64,64 @@ def main():
             break
             
         logging.info(f"Fetching news for: {label_text}")
-        articles = fetch_trending_news(query=query, category=category, country=country)
+        # Fetch FAST (skip decoding/images)
+        articles = fetch_trending_news(query=query, category=category, country=country, skip_heavy_ops=True)
         
         # Take top 2 articles from each topic to balance the feed
         for article in articles[:2]:
             if posts_count >= MAX_POSTS_PER_CYCLE:
                 break
 
-            url = article['url']
+            # 1. Deferred Decoding and Image Search
+            # We do this BEFORE duplicate check to get the real URL
+            rss_link = article.get('rss_link')
+            actual_url = article['url']
             title = article['title']
+
+            # Only decode if it's a google news link
+            if "news.google.com" in actual_url and rss_link:
+                try:
+                    decoded = new_decoderv1(rss_link)
+                    if decoded.get("status"):
+                        actual_url = decoded["decoded_url"]
+                except: pass
+
+            # Update article with real URL
+            article['url'] = actual_url
             
             # Check if already posted (Local + Firebase + Title check)
-            if url in posted_urls or firebase_db.is_article_posted(url, title):
-                logging.info(f"Skipping duplicate article: {title}")
+            if actual_url in posted_urls or firebase_db.is_article_posted(actual_url, title):
+                # logging.debug(f"Skipping duplicate: {title}")
                 continue
                 
-            logging.info(f"Processing ({label_text}): {article['title']}")
+            logging.info(f"Article selected: {title}")
+            
+            # Now fetch image ONLY for this selected article
+            image_url = None
+            try:
+                image_url = get_og_image(actual_url)
+            except: pass
+            article['urlToImage'] = image_url
+
+            logging.info(f"Processing ({label_text}): {title}")
             
             # 2. Generate Content
-            generated_content = generate_blog_post(
-                article['title'], 
-                article['description'], 
-                url,
-                article.get('urlToImage')
-            )
+            try:
+                generated_content = generate_blog_post(
+                    title, 
+                    article['description'], 
+                    actual_url,
+                    image_url
+                )
+            except Exception as e:
+                logging.error(f"Generation failed for {title}: {e}")
+                continue
             
             if not generated_content:
                 continue
             
             # Add original URL to generated content for Firebase logging
-            generated_content['url'] = url
+            generated_content['url'] = actual_url
             
             # OPTIONAL: Save to Firebase (if key exists)
             firebase_db.save_article(generated_content)
@@ -108,28 +137,36 @@ def main():
             
             final_content = generated_content['content']
             
-            blogger_url = post_to_blogger(
+            result = post_to_blogger(
                 BLOG_ID,
                 generated_content['title'],
                 final_content,
                 labels
             )
             
-            if blogger_url:
-                logging.info(f"Successfully posted! URL: {blogger_url}")
+            if result:
+                post_url = result.get('url')
+                logging.info(f"Successfully posted! URL: {post_url}")
                 # Save to history
-                save_posted_article(url) # Use 'url' as it's the original news URL
-                posted_urls.append(url) 
+                save_posted_article(actual_url)
+                posted_urls.append(actual_url) 
                 posts_count += 1
                 
                 # Cross-post to Facebook
-                logging.info(f"Attempting to cross-post to Facebook: {title}")
-                post_to_facebook(generated_content['title'], blogger_url)
+                if post_url:
+                    logging.info(f"Attempting to cross-post to Facebook: {title}")
+                    try:
+                        post_to_facebook(generated_content['title'], post_url)
+                    except:
+                        logging.warning("Facebook cross-post failed.")
                 
-                # Rate limiting (10 seconds - reduced for faster CI execution)
+                # Rate limiting
                 time.sleep(10)
             else:
-                logging.error("Failed to post to Blogger.")
+                logging.error("Failed to post to Blogger. This is likely an authentication issue.")
+                if posts_count == 0:
+                     logging.error("CRITICAL: Authentication failed (invalid_grant?). Please regenerate your token using the instructions provided.")
+                     return # Exit early
 
     logging.info(f"Cycle completed. Posted {posts_count} articles.")
 

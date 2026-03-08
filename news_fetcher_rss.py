@@ -63,9 +63,10 @@ def get_og_image(url):
         pass
     return None
 
-def fetch_trending_news(query=None, category=None, country='IN'):
+def fetch_trending_news(query=None, category=None, country='IN', skip_heavy_ops=True):
     """
-    Fetches trending news from Google News RSS and attempts to find images.
+    Fetches trending news from Google News RSS.
+    If skip_heavy_ops is True, it returns raw entry data without decoding or scraping images.
     """
     base_url = "https://news.google.com/rss"
     
@@ -90,34 +91,37 @@ def fetch_trending_news(query=None, category=None, country='IN'):
         feed = feedparser.parse(rss_url)
         
         articles = []
-        # Limit to 30 to fetch efficiently as we are scraping images now
+        # Limit to 30 to fetch efficiently
         for entry in feed.entries[:30]: 
             published_date = entry.published if 'published' in entry else str(datetime.now())
             
-            # 1. Decode URL to get original publisher link
             original_url = entry.link
-            try:
-                decoded = new_decoderv1(entry.link)
-                if decoded.get("status"):
-                    original_url = decoded["decoded_url"]
-            except Exception as e:
-                pass
-                # Keep original_url as fallback
-            
-            # 2. Fetch Image from ORIGINAL URL
             image_url = None
-            try:
-                image_url = get_og_image(original_url)
-            except:
-                pass
+
+            # Only do heavy operations if NOT skipped
+            if not skip_heavy_ops:
+                # 1. Decode URL to get original publisher link
+                try:
+                    decoded = new_decoderv1(entry.link)
+                    if decoded.get("status"):
+                        original_url = decoded["decoded_url"]
+                except:
+                    pass
+                
+                # 2. Fetch Image from ORIGINAL URL
+                try:
+                    image_url = get_og_image(original_url)
+                except:
+                    pass
             
             articles.append({
                 'title': entry.title,
                 'description': entry.title,
-                'url': original_url, # Use the cleaner decoded URL
+                'url': original_url,
                 'source': entry.source.title if 'source' in entry else 'Google News',
                 'publishedAt': published_date,
-                'urlToImage': image_url
+                'urlToImage': image_url,
+                'rss_link': entry.link # Keep RSS link for deferred decoding
             })
             
         logging.info(f"Fetched {len(articles)} articles from RSS.")
