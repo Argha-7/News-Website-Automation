@@ -58,3 +58,11 @@ token.pickle
 *.txt
 !requirements.txt
 !README.md
+
+# Media
+*.mp4
+*.mp3
+*.wav
+*.mov
+*.avi
+*.mkv

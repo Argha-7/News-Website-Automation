@@ -21,20 +21,22 @@ def setup_token():
     print(f"DEBUG: Using Client ID starting with: {client_id[:10]}...")
 
     token_data = {
+        "token": "", # Will be refreshed on first use
         "refresh_token": refresh_token,
         "token_uri": "https://oauth2.googleapis.com/token",
         "client_id": client_id,
         "client_secret": client_secret,
-        "scopes": ["https://www.googleapis.com/auth/blogger"]
+        "scopes": ["https://www.googleapis.com/auth/blogger"],
+        "expiry": "2020-01-01T00:00:00Z" # Force refresh
     }
     
     try:
         with open('token.json', 'w') as f:
             json.dump(token_data, f, indent=4)
-        print("token.json successfully created from environment variables.")
+        print("SUCCESS: token.json created for GitHub Actions.")
         return True
     except Exception as e:
-        print(f"Error creating token.json: {e}")
+        print(f"ERROR creating token.json: {e}")
         return False
 
 if __name__ == "__main__":

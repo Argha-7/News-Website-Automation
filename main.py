@@ -157,15 +157,19 @@ def main():
                     logging.info(f"Attempting to cross-post to Facebook: {title}")
                     try:
                         post_to_facebook(generated_content['title'], post_url)
-                    except:
-                        logging.warning("Facebook cross-post failed.")
+                    except Exception as fb_err:
+                        logging.warning(f"Facebook cross-post failed: {fb_err}")
                 
                 # Rate limiting
                 time.sleep(10)
             else:
-                logging.error("Failed to post to Blogger. This is likely an authentication issue.")
+                is_gh = os.getenv('GITHUB_ACTIONS') == 'true'
+                logging.error(f"Failed to post to Blogger ({'GitHub' if is_gh else 'Local'}). This is likely an authentication or quota issue.")
                 if posts_count == 0:
-                     logging.error("CRITICAL: Authentication failed (invalid_grant?). Please regenerate your token using the instructions provided.")
+                     if is_gh:
+                         logging.error("CRITICAL: GitHub Authentication failed. Check BLOGGER_REFRESH_TOKEN secret.")
+                     else:
+                         logging.error("CRITICAL: Authentication failed (invalid_grant?). Please regenerate your token using blogger_setup.py.")
                      return # Exit early
 
     logging.info(f"Cycle completed. Posted {posts_count} articles.")

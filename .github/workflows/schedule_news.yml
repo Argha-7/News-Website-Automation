@@ -40,11 +40,18 @@ jobs:
       run: |
         # Create serviceAccountKey.json from secret if it exists
         if [ ! -z "${FIREBASE_KEY_JSON}" ]; then
-          echo "${FIREBASE_KEY_JSON}" > serviceAccountKey.json
+          printf "%s" "${FIREBASE_KEY_JSON}" > serviceAccountKey.json
+          echo "Firebase key file created."
         fi
         
         # Setup Auth
         python setup_auth.py
+        
+        # Verify Auth Token
+        if [ ! -f "token.json" ]; then
+          echo "ERROR: token.json was not created!"
+          exit 1
+        fi
         
         # Run Main Script
         python main.py

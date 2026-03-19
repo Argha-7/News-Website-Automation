@@ -202,25 +202,16 @@ def generate_blog_post(article_title, article_description, article_url, article_
             # Fallback: attempt to find and fix common issues or return partial failure
             raise decode_error
         
-        # 1. Add YouTube Video at Top (Replaced Position)
-        video_query = f"{article_title} trailer news"
-        video_embed, video_id = get_youtube_video(video_query)
-        if video_embed:
-            content_data['content'] = f"<h3>Watch Related Video</h3>{video_embed}" + content_data['content']
+        # YouTube video code removed as per user request
 
         # 2. Add Image at Bottom (Replaced Position)
         if not article_image_url:
-            if video_id:
-                # Fallback to YouTube thumbnail
-                article_image_url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
-                logging.info(f"Using YouTube thumbnail as fallback image: {article_image_url}")
-            else:
-                # Fallback to AI generated image if no image found and no YouTube video
-                clean_title = article_title[:80].replace("'", "").replace('"', '')
-                prompt = f"editorial news photography of {clean_title}, realistic, 4k, journalism style, highly detailed, dramatic lighting"
-                safe_prompt = urllib.parse.quote(prompt)
-                article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
-                logging.info(f"Using AI generated image as fallback: {article_image_url}")
+            # Fallback to AI generated image if no image found
+            clean_title = article_title[:80].replace("'", "").replace('"', '')
+            prompt = f"editorial news photography of {clean_title}, realistic, 4k, journalism style, highly detailed, dramatic lighting"
+            safe_prompt = urllib.parse.quote(prompt)
+            article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
+            logging.info(f"Using AI generated image as fallback: {article_image_url}")
             
         img_tag = f'<img src="{article_image_url}" style="width:100%; border-radius:10px; margin-bottom:20px;">' # Move to TOP
         content_data['content'] = img_tag + content_data['content'] # Prepend
