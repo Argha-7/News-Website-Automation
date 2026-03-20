@@ -17,12 +17,13 @@ def get_og_image(url):
     """
     try:
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Referer": "https://www.google.com/"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Referer": "https://news.google.com/",
+            "Cache-Control": "no-cache"
         }
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=12)
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
             
@@ -54,10 +55,27 @@ def get_og_image(url):
                 if not is_small:
                     return og_image["content"]
             
-            # 2. Fallback: Twitter image (often high res)
+            # 2. Try Twitter Image
             twitter_image = soup.find("meta", attrs={"name": "twitter:image"})
             if twitter_image and twitter_image.get("content"):
                 return twitter_image["content"]
+            
+            # 3. Try article:section image or generic image tags
+            generic_image = soup.find("meta", property="image")
+            if generic_image and generic_image.get("content"):
+                return generic_image["content"]
+
+            # 4. Try schema.org ImageObject
+            import json
+            for script in soup.find_all("script", type="application/ld+json"):
+                try:
+                    data = json.loads(script.string)
+                    if isinstance(data, dict):
+                        if 'image' in data:
+                            img = data['image']
+                            if isinstance(img, dict) and 'url' in img: return img['url']
+                            if isinstance(img, str): return img
+                except: continue
                 
     except Exception as e:
         pass

@@ -206,14 +206,25 @@ def generate_blog_post(article_title, article_description, article_url, article_
 
         # 2. Add Image at Bottom (Replaced Position)
         if not article_image_url:
-            # Fallback to AI generated image if no image found
+            # 1. Fallback to AI generated image (Pollinations) - Stable endpoint
             clean_title = article_title[:80].replace("'", "").replace('"', '')
-            prompt = f"editorial news photography of {clean_title}, realistic, 4k, journalism style, highly detailed, dramatic lighting"
+            # Prompt for AI Image
+            prompt = f"Professional news cover photo of {clean_title}, cinematic, photojournalism"
             safe_prompt = urllib.parse.quote(prompt)
-            article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?width=800&height=400&nologo=true&model=flux"
+            # Use general endpoint which is often more stable than specific models
+            article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?nologo=true&width=1024&height=512"
             logging.info(f"Using AI generated image as fallback: {article_image_url}")
             
-        img_tag = f'<img src="{article_image_url}" style="width:100%; border-radius:10px; margin-bottom:20px;">' # Move to TOP
+            # 2. Final safety fallback to ensure NO BROKEN ICONS
+            # We add a secondary img source for the HTML if the first fails in browser
+            fallback_placeholder = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000&auto=format&fit=crop" # High quality news theme
+            
+            # Using HTML 'onerror' to swap if the first URL fails (e.g. 403 or 500)
+            img_tag = f'<img src="{article_image_url}" onerror="this.src=\'{fallback_placeholder}\'" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">'
+        else:
+            # Ensure even original images have the fallback placeholder if hotlinked blocked
+            fallback_placeholder = "https://images.unsplash.com/photo-1585829365234-781fdf56c76b?q=80&w=1000&auto=format&fit=crop"
+            img_tag = f'<img src="{article_image_url}" onerror="this.src=\'{fallback_placeholder}\'" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">'
         content_data['content'] = img_tag + content_data['content'] # Prepend
 
         # 3. Append Hindi & Bengali Content
