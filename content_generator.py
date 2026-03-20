@@ -202,34 +202,38 @@ def generate_blog_post(article_title, article_description, article_url, article_
             # Fallback: attempt to find and fix common issues or return partial failure
             raise decode_error
         
-        # YouTube video code removed as per user request
+        # 1. YouTube Video Search
+        video_query = f"{article_title} news"
+        video_embed, video_id = get_youtube_video(video_query)
 
-        # 2. Add Image at Bottom (Replaced Position)
+        # 2. Image Selection & Fallback Logic
         if not article_image_url:
-            # 1. Fallback to AI generated image (Pollinations) - Stable endpoint
-            clean_title = article_title[:80].replace("'", "").replace('"', '')
-            # Prompt for AI Image
-            prompt = f"Professional news cover photo of {clean_title}, cinematic, photojournalism"
-            safe_prompt = urllib.parse.quote(prompt)
-            # Use general endpoint which is often more stable than specific models
-            article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?nologo=true&width=1024&height=512"
-            logging.info(f"Using AI generated image as fallback: {article_image_url}")
-            
-            # 2. Final safety fallback to ensure NO BROKEN ICONS
-            # We add a secondary img source for the HTML if the first fails in browser
-            fallback_placeholder = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000&auto=format&fit=crop" # High quality news theme
-            
-            # Using HTML 'onerror' to swap if the first URL fails (e.g. 403 or 500)
-            img_tag = f'<img src="{article_image_url}" onerror="this.src=\'{fallback_placeholder}\'" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">'
-        else:
-            # Ensure even original images have the fallback placeholder if hotlinked blocked
-            fallback_placeholder = "https://images.unsplash.com/photo-1585829365234-781fdf56c76b?q=80&w=1000&auto=format&fit=crop"
-            img_tag = f'<img src="{article_image_url}" onerror="this.src=\'{fallback_placeholder}\'" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">'
-        content_data['content'] = img_tag + content_data['content'] # Prepend
+            if video_id:
+                # Use YouTube thumbnail as primary fallback
+                article_image_url = f"https://i.ytimg.com/vi/{video_id}/maxresdefault.jpg"
+                logging.info(f"Using YouTube thumbnail as image: {article_image_url}")
+            else:
+                # Use AI generated image as secondary fallback
+                clean_title = article_title[:80].replace("'", "").replace('"', '')
+                prompt = f"Professional news cover photo of {clean_title}, cinematic, photojournalism"
+                safe_prompt = urllib.parse.quote(prompt)
+                article_image_url = f"https://image.pollinations.ai/prompt/{safe_prompt}?nologo=true&width=1024&height=512"
+                logging.info(f"Using AI generated image as fallback: {article_image_url}")
+        
+        # Final HTML Image Tag with browser-side safety fallback
+        primary_placeholder = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1000&auto=format&fit=crop"
+        img_tag = f'<img src="{article_image_url}" onerror="this.src=\'{primary_placeholder}\'" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">'
+        
+        # Prepend Image to Content
+        content_data['content'] = img_tag + content_data['content']
 
-        # 3. Append Hindi & Bengali Content
+        # 3. Append Hindi Summary
         if 'content_hindi' in content_data and content_data['content_hindi']:
             content_data['content'] += f'<hr style="margin:40px 0;"><h2>🇮🇳 हिंदी में पढ़ें (News in Hindi)</h2>{content_data["content_hindi"]}'
+        
+        # 4. Append YouTube Video at the very bottom
+        if video_embed:
+            content_data['content'] += f'<hr style="margin:20px 0;"><h3>Related Video Update</h3>{video_embed}'
             
         return content_data
 
